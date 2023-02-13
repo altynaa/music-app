@@ -4,7 +4,13 @@ const rootPath = __dirname;
 
 const config = {
     rootPath,
-    publicPath: path.join(rootPath, 'public')
+    publicPath: path.join(rootPath, 'public'),
+    db: {
+        host: 'localhost',
+        user: 'root',
+        password: 'root',
+        database: 'music'
+    }
 };
 
 export default config;

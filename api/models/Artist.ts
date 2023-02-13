@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import {Schema} from "mongoose";
 
 const ArtistSchema = new Schema({
-    title: {
+    name: {
         type: String,
         required: true
     },
