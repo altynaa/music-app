@@ -16,7 +16,7 @@ const AlbumSchema = new Schema({
             message: 'Artist does not exist'
         }
     },
-    createdAt: {
+    releasedAt: {
         type: String,
         required: true
     },

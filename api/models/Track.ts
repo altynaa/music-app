@@ -15,7 +15,10 @@ const TrackSchema = new Schema({
             validator: async (value: Types.ObjectId) => Album.findById(value),
             message: 'Album was not found'
         },
-        length: String
+        length: {
+            type: String,
+            required: true
+        }
     }
 });
 

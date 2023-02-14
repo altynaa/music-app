@@ -1,7 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import Artist from "../models/Artist";
-import { imagesUpload } from "../multer";
+import {imagesUpload} from "../multer";
 import {ArtistApi} from "../types";
 
 const artistsRouter = express.Router();
@@ -9,7 +9,7 @@ const artistsRouter = express.Router();
 artistsRouter.get('/', async (req, res) => {
     try {
         const artists = await Artist.find();
-        res.send(artists);
+        return res.send(artists);
 
     } catch {
         return res.sendStatus(500)
