@@ -17,4 +17,10 @@ export interface TrackApi {
     length: string
 }
 
+export interface IUser {
+    username: string;
+    password: string;
+    token: string;
+}
+
 
