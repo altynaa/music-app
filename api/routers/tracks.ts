@@ -1,6 +1,6 @@
 import express from "express";
 import Track from "../models/Track";
-import {TrackApi} from "../types";
+import {ITrack} from "../types";
 import mongoose from "mongoose";
 
 const tracksRouter = express.Router();
@@ -20,7 +20,7 @@ tracksRouter.get('/', async (req, res) => {
 });
 
 tracksRouter.post('/', async (req, res, next) => {
-    const trackData: TrackApi = {
+    const trackData: ITrack = {
         title: req.body.title,
         album: req.body.album,
         length: req.body.length
