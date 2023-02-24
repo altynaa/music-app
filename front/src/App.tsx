@@ -1,10 +1,21 @@
 import React from 'react';
+import {Container, CssBaseline} from "@mui/material";
+import AppToolBar from "./components/UI/AppToolBar/AppToolBar";
 
 function App() {
   return (
-    <div className="App">
+    <>
+      <CssBaseline/>
+      <header>
+        <AppToolBar/>
+      </header>
+      <main>
+        <Container maxWidth="xl">
 
-    </div>
+        </Container>
+      </main>
+
+    </>
   );
 }
 
