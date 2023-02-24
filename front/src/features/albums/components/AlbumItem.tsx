@@ -2,6 +2,7 @@ import React from 'react';
 import {Card, CardActionArea, CardContent, CardHeader, CardMedia, Grid, styled} from "@mui/material";
 import noImageAvailable from "../../../assets/images/noImageAvailable.jpg";
 import {apiURL} from "../../../constants";
+import {Link} from "react-router-dom";
 
 interface Props {
     id: string,
@@ -23,7 +24,7 @@ const AlbumItem: React.FC<Props> = ({id, title, image, releasedAt}) => {
 
     return (
         <Grid item xs={12} sm={6} md={4} lg={3}>
-            <Card>
+            <Card component={Link} to={'/tracks/' + id}>
                 <CardActionArea>
                     <CardHeader title={title}/>
                     <ImageCardMedia image={cardImage} title={title}/>

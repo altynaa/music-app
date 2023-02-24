@@ -24,7 +24,7 @@ const ArtistItem: React.FC<Props> = ({id, name, image}) => {
 
     return (
         <Grid item xs={12} sm={6} md={4} lg={3}>
-            <Card component={Link} to={'/albums?artist=' + id}>
+            <Card component={Link} to={'/albums/' + id}>
                 <CardActionArea >
                     <CardHeader title={name}/>
                     <ImageCardMedia image={cardImage} title={name}/>
