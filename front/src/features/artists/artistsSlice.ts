@@ -1,5 +1,5 @@
-import {Artist} from "../../types";
 import {createSlice} from "@reduxjs/toolkit";
+import {Artist} from "../../types";
 import {RootState} from "../../app/store";
 import {fetchArtists, fetchOneArtist} from "./artistsThunks";
 

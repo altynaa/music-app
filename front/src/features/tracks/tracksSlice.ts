@@ -1,5 +1,5 @@
-import {Track} from "../../types";
 import {createSlice} from "@reduxjs/toolkit";
+import {Track} from "../../types";
 import {RootState} from "../../app/store";
 import {fetchTracks} from "./tracksThunks";
 

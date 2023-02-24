@@ -1,12 +1,12 @@
 import React, {useEffect} from 'react';
-import {Grid, Typography} from "@mui/material";
-import {selectAlbums, selectAlbumsLoading} from "./albumsSlice";
-import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {fetchAlbums} from "./albumsThunks";
 import {useParams} from "react-router-dom";
 import AlbumItem from "./components/AlbumItem";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import {selectAlbums, selectAlbumsLoading} from "./albumsSlice";
+import {fetchAlbums} from "./albumsThunks";
 import {selectOneArtist} from "../artists/artistsSlice";
 import {fetchOneArtist} from "../artists/artistsThunks";
+import {Box, CircularProgress, Grid, Typography} from "@mui/material";
 
 const Albums = () => {
     const dispatch = useAppDispatch();
@@ -26,12 +26,14 @@ const Albums = () => {
         <Grid container direction="column" spacing={2}>
             <Grid item container justifyContent="space-between" alignItems="center">
                 <Grid item>
-                    <Typography variant="h4" > List of {artist.name}'s albums.
+                    <Typography variant="h4"> List of {artist.name}'s albums.
                     </Typography>
                 </Grid>
             </Grid>
             <Grid item container spacing={2}>
-                {albums.map(album => (
+                {albumsLoading ? <Box sx={{display: 'flex'}}>
+                    <CircularProgress/>
+                </Box> : albums.map(album => (
                     <AlbumItem
                         key={album._id}
                         id={album._id}
@@ -40,6 +42,7 @@ const Albums = () => {
                         releasedAt={album.releasedAt}
                     />
                 ))}
+
             </Grid>
         </Grid>
     );

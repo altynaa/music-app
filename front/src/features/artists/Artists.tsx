@@ -1,9 +1,9 @@
 import React, {useEffect} from 'react';
-import {Grid, Typography} from "@mui/material";
 import ArtistItem from "./components/ArtistItem";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {selectArtists, selectArtistsLoading} from "./artistsSlice";
 import {fetchArtists} from "./artistsThunks";
+import {Box, CircularProgress, Grid, Typography} from "@mui/material";
 
 const Artists = () => {
     const dispatch = useAppDispatch();
@@ -24,14 +24,18 @@ const Artists = () => {
                 </Grid>
             </Grid>
             <Grid item container spacing={2}>
-                {artists.map(artist => (
-                    <ArtistItem
-                    key={artist._id}
-                    id={artist._id}
-                    name={artist.name}
-                    image={artist.image}
-                    />
-                ))}
+                {artistsLoading ?
+                    <Box sx={{display: 'flex'}}>
+                        <CircularProgress/>
+                    </Box> :
+                    artists.map(artist => (
+                        <ArtistItem
+                            key={artist._id}
+                            id={artist._id}
+                            name={artist.name}
+                            image={artist.image}
+                        />
+                    ))}
             </Grid>
         </Grid>
     );

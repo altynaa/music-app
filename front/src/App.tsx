@@ -19,7 +19,6 @@ function App() {
                         <Route path="/" element={<Artists/>}/>
                         <Route path="/albums/:id" element={<Albums/>}/>
                         <Route path="/tracks/:id" element={<Tracks/>}/>
-
                     </Routes>
                 </Container>
             </main>

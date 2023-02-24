@@ -16,4 +16,4 @@ export const fetchOneAlbum = createAsyncThunk<Album, string>(
         const response = await axiosApi.get('/albums/' + id);
         return response.data;
     }
-)
+);
