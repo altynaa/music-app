@@ -1,7 +1,8 @@
 import React from 'react';
-import {Card, CardContent, CardHeader, CardMedia, Grid, styled} from "@mui/material";
+import {Card, CardActionArea, CardHeader, CardMedia, Grid, styled} from "@mui/material";
 import noImageAvailable from '../../../assets/images/noImageAvailable.jpg';
 import {apiURL} from "../../../constants";
+import {Link} from "react-router-dom";
 
 
 const ImageCardMedia = styled(CardMedia)({
@@ -23,14 +24,11 @@ const ArtistItem: React.FC<Props> = ({id, name, image}) => {
 
     return (
         <Grid item xs={12} sm={6} md={4} lg={3}>
-            <Card>
-                <CardHeader title={name}/>
-                <ImageCardMedia image={cardImage} title={name}/>
-                {/*<CardActions>*/}
-                {/*    <IconButton component={Link} to={'/artists/' + id}>*/}
-                {/*        <ArrowForwardIcon/>*/}
-                {/*    </IconButton>*/}
-                {/*</CardActions>*/}
+            <Card component={Link} to={'/albums?artist=' + id}>
+                <CardActionArea >
+                    <CardHeader title={name}/>
+                    <ImageCardMedia image={cardImage} title={name}/>
+                </CardActionArea>
             </Card>
         </Grid>
     );
