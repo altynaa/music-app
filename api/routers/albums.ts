@@ -9,10 +9,10 @@ const albumsRouter = express.Router();
 albumsRouter.get('/', async (req, res) => {
     try {
         if (req.query.artist) {
-            const albums = await Album.find({artist: req.query.artist});
+            const albums = await Album.find({artist: req.query.artist}).sort({releasedAt: -1});
             res.send(albums);
         } else {
-            const albums = await Album.find();
+            const albums = await Album.find().sort({releasedAt: -1});
             return res.send(albums);
         }
     } catch  {
