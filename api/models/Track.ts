@@ -19,6 +19,10 @@ const TrackSchema = new Schema({
     length: {
         type: String,
         required: true
+    },
+    ordNumber: {
+        type: Number,
+        required: true
     }
 });
 

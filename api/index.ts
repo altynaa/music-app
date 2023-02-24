@@ -6,6 +6,7 @@ import albumsRouter from "./routers/albums";
 import tracksRouter from "./routers/tracks";
 import usersRouter from "./routers/users";
 import track_historiesRouter from "./routers/track_histories";
+import config from "./config";
 
 const app = express();
 const port = 8000;
@@ -22,7 +23,7 @@ app.use('/track_history', track_historiesRouter);
 
 const run = async () => {
     mongoose.set('strictQuery', false);
-    await mongoose.connect('mongodb://localhost/music');
+    await mongoose.connect(config.db);
 
     app.listen(port, () => {
         console.log('We are live on ' + port);

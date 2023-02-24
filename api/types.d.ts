@@ -7,14 +7,15 @@ export interface IArtist {
 export interface IAlbum {
     title: string,
     artist: string,
-    releasedAt: string,
+    releasedAt: number,
     image: string | null
 }
 
 export interface ITrack {
     title: string,
     album: string,
-    length: string
+    length: string,
+    ordNumber: number
 }
 
 export interface IUser {
