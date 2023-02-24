@@ -5,16 +5,20 @@ import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {fetchAlbums} from "./albumsThunks";
 import {useParams} from "react-router-dom";
 import AlbumItem from "./components/AlbumItem";
+import {selectOneArtist} from "../artists/artistsSlice";
+import {fetchOneArtist} from "../artists/artistsThunks";
 
 const Albums = () => {
     const dispatch = useAppDispatch();
     const {id} = useParams();
     const albums = useAppSelector(selectAlbums);
     const albumsLoading = useAppSelector(selectAlbumsLoading);
+    const artist = useAppSelector(selectOneArtist);
 
     useEffect(() => {
         if (id) {
             dispatch(fetchAlbums(id));
+            dispatch(fetchOneArtist(id));
         }
     }, [dispatch]);
 
@@ -22,8 +26,7 @@ const Albums = () => {
         <Grid container direction="column" spacing={2}>
             <Grid item container justifyContent="space-between" alignItems="center">
                 <Grid item>
-                    <Typography variant="h4">
-                        Albums of the .....
+                    <Typography variant="h4" > List of {artist.name}'s albums.
                     </Typography>
                 </Grid>
             </Grid>
