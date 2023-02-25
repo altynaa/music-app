@@ -17,8 +17,10 @@ function App() {
                 <Container maxWidth="xl">
                     <Routes>
                         <Route path="/" element={<Artists/>}/>
+                        <Route path="/artists" element={<Artists/>}/>
                         <Route path="/albums/:id" element={<Albums/>}/>
                         <Route path="/tracks/:id" element={<Tracks/>}/>
+                        <Route path="*" element={<h2>Page not found</h2>}/>
                     </Routes>
                 </Container>
             </main>
