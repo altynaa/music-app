@@ -1,6 +1,7 @@
 import React from 'react';
 import {AppBar, Grid, styled, Toolbar, Typography} from "@mui/material";
 import {NavLink} from "react-router-dom";
+import AnonymousMenu from "./AnonymousMenu";
 
 const Link = styled(NavLink)({
     color: 'inherit',
@@ -18,6 +19,9 @@ const AppToolBar = () => {
                     <Typography variant="h6" component="div">
                       <Link to="/">Music app</Link>
                     </Typography>
+                    <Grid item>
+                        <AnonymousMenu/>
+                    </Grid>
                 </Grid>
             </Toolbar>
         </AppBar>
