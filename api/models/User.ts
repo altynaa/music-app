@@ -1,4 +1,4 @@
-import {Model, model, Schema} from "mongoose";
+import {HydratedDocument, Model, model, Schema} from "mongoose";
 import bcrypt from 'bcrypt';
 import {IUser} from "../types";
 import {randomUUID} from "crypto";
@@ -7,27 +7,37 @@ const SALT_WORK_FACTOR = 10;
 
 interface IUserMethods {
     checkPassword(password: string): Promise<boolean>;
+
     generateToken(): void
 }
+
 type UserModel = Model<IUser, {}, IUserMethods>;
 
 const UserSchema = new Schema<IUser, UserModel, IUserMethods>({
     username: {
         type: String,
         required: true,
-        unique: true
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    token: {
-        type: String,
-        required: true
+        unique: true,
+        validate: {
+            validator: async function (this: HydratedDocument<IUser>, username: string): Promise<boolean> {
+                if (!this.isModified('username')) return true;
+                const user: HydratedDocument<IUser> | null = await User.findOne({username});
+                return !Boolean(user);
+            },
+            message: 'User already exists'
+        },
+        password: {
+            type: String,
+            required: true
+        },
+        token: {
+            type: String,
+            required: true
+        }
     }
 });
 
-UserSchema.pre('save', async function (next)  {
+UserSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
         return next();
     }
@@ -44,7 +54,6 @@ UserSchema.set('toJSON', {
 });
 
 UserSchema.methods.checkPassword = function (password) {
-    console.log(password, this.password);
     return bcrypt.compare(password, this.password);
 };
 UserSchema.methods.generateToken = function () {
