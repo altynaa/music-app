@@ -26,14 +26,15 @@ const UserSchema = new Schema<IUser, UserModel, IUserMethods>({
             },
             message: 'User already exists'
         },
-        password: {
-            type: String,
-            required: true
-        },
-        token: {
-            type: String,
-            required: true
-        }
+
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    token: {
+        type: String,
+        required: true
     }
 });
 

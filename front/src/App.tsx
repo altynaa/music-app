@@ -6,6 +6,7 @@ import {Route, Routes} from "react-router-dom";
 import Albums from "./features/albums/Albums";
 import Tracks from "./features/tracks/Tracks";
 import Register from "./features/users/Register";
+import Login from "./features/users/Login";
 
 function App() {
     return (
@@ -22,6 +23,7 @@ function App() {
                         <Route path="/albums/:id" element={<Albums/>}/>
                         <Route path="/tracks/:id" element={<Tracks/>}/>
                         <Route path="/register" element={<Register/>}/>
+                        <Route path="/login" element={<Login/>}/>
                         <Route path="*" element={<h2>Page not found</h2>}/>
                     </Routes>
                 </Container>
