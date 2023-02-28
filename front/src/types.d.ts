@@ -57,3 +57,11 @@ export interface LoginMutation {
 export interface GlobalError {
     error: string
 }
+
+export interface TrackHistory {
+    _id: string;
+    user: string;
+    track: Track;
+    artist: Artist;
+    datetime: string;
+}

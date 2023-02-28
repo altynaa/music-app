@@ -2,6 +2,9 @@ import React from 'react';
 import {NavLink} from "react-router-dom";
 import AnonymousMenu from "./AnonymousMenu";
 import {AppBar, Grid, styled, Toolbar, Typography} from "@mui/material";
+import {useAppSelector} from "../../../app/hooks";
+import {selectUser} from "../../../features/users/usersSlice";
+import UserMenu from "./UserMenu";
 
 const Link = styled(NavLink)({
     color: 'inherit',
@@ -12,6 +15,7 @@ const Link = styled(NavLink)({
 });
 
 const AppToolBar = () => {
+    const user = useAppSelector(selectUser);
     return (
         <AppBar position="sticky" sx={{mb: 2}} >
             <Toolbar>
@@ -20,7 +24,7 @@ const AppToolBar = () => {
                       <Link to="/">Music app</Link>
                     </Typography>
                     <Grid item>
-                        <AnonymousMenu/>
+                        {user ? (<UserMenu user={user}/>) : <AnonymousMenu/>}
                     </Grid>
                 </Grid>
             </Toolbar>

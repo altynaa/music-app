@@ -5,7 +5,7 @@ import {selectTracks, selectTracksLoading} from "./tracksSlice";
 import {fetchTracks} from "./tracksThunks";
 import {fetchOneAlbum} from "../albums/albumsThunks";
 import {selectOneAlbum} from "../albums/albumsSlice";
-import {Box, CircularProgress, Grid, Typography} from "@mui/material";
+import {Box, Button, CircularProgress, Grid, Typography} from "@mui/material";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -13,6 +13,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import {selectUser} from "../users/usersSlice";
 
 const Tracks = () => {
     const dispatch = useAppDispatch();
@@ -20,6 +22,7 @@ const Tracks = () => {
     const tracks = useAppSelector(selectTracks);
     const tracksLoading = useAppSelector(selectTracksLoading);
     const album = useAppSelector(selectOneAlbum);
+    const user = useAppSelector(selectUser);
 
     useEffect(() => {
         if (id) {
@@ -47,6 +50,7 @@ const Tracks = () => {
                                 <TableCell>#</TableCell>
                                 <TableCell align="left">Name of track</TableCell>
                                 <TableCell align="left">Time</TableCell>
+                                {user &&  <TableCell align="center">Play</TableCell>}
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -62,6 +66,9 @@ const Tracks = () => {
                                     </TableCell>
                                     <TableCell align="left">{track.title}</TableCell>
                                     <TableCell align="left">{track.length}</TableCell>
+                                    {user &&  <TableCell align="center">
+                                        <Button onClick={() => console.log({track})}><PlayArrowIcon/></Button>
+                                    </TableCell> }
                                 </TableRow>
                             ))}
                         </TableBody>

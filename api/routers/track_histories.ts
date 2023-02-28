@@ -1,33 +1,47 @@
 import express from "express";
-import User from "../models/User";
 import {ITrackHistory} from "../types";
+import auth, {RequestWithUser} from "../middleware/auth";
 import TrackHistory from "../models/TrackHistory";
+import Track from "../models/Track";
+import Album from "../models/Album";
 import mongoose from "mongoose";
 
 const track_historiesRouter = express.Router();
 
-track_historiesRouter.post('/', async (req, res, next) => {
-    const token = req.get('Authorization');
+track_historiesRouter.post('/', auth, async (req, res, next) => {
+    const user = (req as RequestWithUser).user;
+    const track = await Track.findById(req.body.track);
 
-    if (!token) {
-        return res.status(401).send({error: 'No token present'});
+    if (track) {
+        const album = await Album.findById(track.album.toString());
+
+        try {
+            const trackHistoryData: ITrackHistory = {
+                user: user._id.toString(),
+                track: req.body.track,
+                datetime: new Date(),
+                artist: album?.artist.toString()
+            };
+            const trackHistory = new TrackHistory(trackHistoryData);
+            await trackHistory.save();
+
+            return res.send({message: 'Track was listened', trackHistory})
+        } catch (e) {
+            if (e instanceof mongoose.Error.ValidationError) {
+                return res.status(400).send(e);
+            } else {
+                next(e);
+            }
+        }
     }
+});
 
-    const user = await User.findOne({token});
-
-    if (!user) {
-        return res.status(401).send({error: 'Wrong token'});
-    }
-    const trackHistoryData: ITrackHistory = {
-        user: user._id.toString(),
-        track: req.body.track,
-        datetime: new Date(),
-    };
-
-    const trackHistory = new TrackHistory(trackHistoryData);
+track_historiesRouter.get('/', auth, async (req, res, next) => {
     try {
-        await trackHistory.save();
-        return res.send(trackHistory);
+        const user = (req as RequestWithUser).user;
+        const tracksHistoryOfUser = await TrackHistory.find({user}).populate('user').populate('artist').populate('track').sort({datetime: -1});
+
+        return res.send(tracksHistoryOfUser);
     } catch (e) {
         if (e instanceof mongoose.Error.ValidationError) {
             return res.status(400).send(e);
@@ -35,8 +49,6 @@ track_historiesRouter.post('/', async (req, res, next) => {
             next(e);
         }
     }
-
-
 });
 
 export default track_historiesRouter;

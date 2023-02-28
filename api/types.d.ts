@@ -25,9 +25,10 @@ export interface IUser {
 }
 
 export interface ITrackHistory {
-    user: string,
-    track: string,
-    datetime: Date
+    user: string;
+    track: string;
+    datetime: Date;
+    artist: string | undefined
 }
 
 
