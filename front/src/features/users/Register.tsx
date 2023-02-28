@@ -3,8 +3,8 @@ import {Link as RouterLink, useNavigate} from 'react-router-dom';
 import {RegistrationMutation} from "../../types";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {register} from "./usersThunks";
-import {selectRegisterError} from "./usersSlice";
-import {Avatar, Box, Button, Container, Grid, Link, TextField, Typography} from "@mui/material";
+import {selectRegisterError, selectRegisterLoading} from "./usersSlice";
+import {Avatar, Box, Button, CircularProgress, Container, Grid, Link, TextField, Typography} from "@mui/material";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 
@@ -12,6 +12,7 @@ const Register = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const error = useAppSelector(selectRegisterError);
+    const registering = useAppSelector(selectRegisterLoading);
 
     const [regState, setRegState] = useState<RegistrationMutation>({
         username: '',
@@ -29,7 +30,7 @@ const Register = () => {
             await dispatch(register(regState)).unwrap();
             navigate('/');
         } catch (e) {
-            /////////////////////////////////////////////////////// ERRRRROOOOOOOOOOOOOR!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            throw new Error('Something went wrong');
         }
     };
 
@@ -88,8 +89,11 @@ const Register = () => {
                         fullWidth
                         variant="contained"
                         sx={{mt: 2, mb: 2}}
+                        disabled={registering}
                     >
-                        Sign up
+                        {registering ? (<Box sx={{display: 'flex'}}>
+                            <CircularProgress/>
+                        </Box>) :  "Sign up"}
                     </Button>
                     <Grid container justifyContent="flex-end">
                         <Link component={RouterLink} to="/login" variant="body2">Already have an account? Sign in!</Link>

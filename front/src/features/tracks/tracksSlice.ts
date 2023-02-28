@@ -4,7 +4,7 @@ import {RootState} from "../../app/store";
 import {fetchTracks} from "./tracksThunks";
 
 interface TracksState {
-    tracks: Track [],
+    tracks: Track [];
     tracksLoading: boolean
 }
 

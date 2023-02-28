@@ -3,7 +3,7 @@ import {artistsReducer} from "../features/artists/artistsSlice";
 import {albumsReducer} from "../features/albums/albumsSlice";
 import {tracksReducer} from "../features/tracks/tracksSlice";
 import {usersReducer} from "../features/users/usersSlice";
-import {persistReducer} from "redux-persist";
+import {persistReducer, persistStore} from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import {FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE} from "redux-persist/es/constants";
 import {trackHistoriesReducer} from "../features/trackHistory/trackHistoriesSlice";
@@ -30,6 +30,8 @@ export const store = configureStore({
             },
         }),
 });
+
+export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

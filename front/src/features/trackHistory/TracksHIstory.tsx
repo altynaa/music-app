@@ -2,9 +2,9 @@ import React, {useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {selectUser} from "../users/usersSlice";
 import {fetchTrackHistory} from "./trackHistoriesThunks";
-import {selectTrackHistories, selectTracksHistLoading} from "./trackHistoriesSlice";
+import {selectTrackHistories, selectTracksHistError, selectTracksHistLoading} from "./trackHistoriesSlice";
 import {useNavigate} from "react-router-dom";
-import {Box,  CircularProgress, Grid} from "@mui/material";
+import {Alert, Box, CircularProgress, Grid} from "@mui/material";
 import TableContainer from "@mui/material/TableContainer";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -20,6 +20,7 @@ const TracksHistory = () => {
     const user = useAppSelector(selectUser);
     const history = useAppSelector(selectTrackHistories);
     const trackHistoryLoading = useAppSelector(selectTracksHistLoading);
+    const error = useAppSelector(selectTracksHistError)
 
     useEffect(() => {
         dispatch(fetchTrackHistory());
@@ -32,6 +33,10 @@ const TracksHistory = () => {
     return (
         <>
             <h2>Here goes list of tracks that were listened by {user?.username} </h2>
+            {error && (
+                <Alert severity="error" sx={{mt: 3, width: '100%'}}>
+                    {error.error}
+                </Alert>)}
             <Grid item container spacing={2}>
                 <TableContainer component={Paper}>
                     <Table sx={{minWidth: 650}} aria-label="simple table">
@@ -61,7 +66,6 @@ const TracksHistory = () => {
                     </Table>
                 </TableContainer>
             </Grid>
-
         </>
     );
 };

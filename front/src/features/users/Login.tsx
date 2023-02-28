@@ -2,9 +2,20 @@ import React, {useState} from 'react';
 import {Link as RouterLink, useNavigate} from 'react-router-dom';
 import {LoginMutation} from "../../types";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {selectLoginError} from "./usersSlice";
+import {selectLoginError, selectLoginLoading} from "./usersSlice";
 import {login} from "./usersThunks";
-import {Alert, Avatar, Box, Button, Container, Grid, Link, TextField, Typography} from '@mui/material';
+import {
+    Alert,
+    Avatar,
+    Box,
+    Button,
+    CircularProgress,
+    Container,
+    Grid,
+    Link,
+    TextField,
+    Typography
+} from '@mui/material';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 
 
@@ -12,6 +23,7 @@ const Login = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const error = useAppSelector(selectLoginError);
+    const logining = useAppSelector(selectLoginLoading);
 
     const [logState, setLogState] = useState<LoginMutation>({
         username: '',
@@ -49,7 +61,7 @@ const Login = () => {
                     <Alert severity="error" sx={{mt: 3, width: '100%'}}>
                         {error.error}
                     </Alert>)}
-                <Box component="form" onSubmit={submitFormHandler}  sx={{mt: 3}}>
+                <Box component="form" onSubmit={submitFormHandler} sx={{mt: 3}}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField
@@ -76,8 +88,12 @@ const Login = () => {
                         fullWidth
                         variant="contained"
                         sx={{mt: 3, mb: 2}}
+                        disabled={logining}
                     >
-                        Sign In
+                        {logining ?
+                            (<Box sx={{display: 'flex'}}>
+                                <CircularProgress/>
+                            </Box>) : "Sign In"}
                     </Button>
                     <Grid container justifyContent="flex-end">
                         <Grid item>

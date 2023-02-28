@@ -3,9 +3,10 @@ import ReactDOM from 'react-dom/client';
 import {BrowserRouter} from "react-router-dom";
 import {Provider} from "react-redux";
 import App from './App';
-import {store} from "./app/store";
+import {persistor, store} from "./app/store";
 import theme from './theme';
 import {ThemeProvider} from "@mui/material";
+import {PersistGate} from "redux-persist/integration/react";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -14,11 +15,14 @@ const root = ReactDOM.createRoot(
 
 root.render(
       <Provider store={store}>
-          <BrowserRouter>
-              <ThemeProvider theme={theme}>
-                  <App />
-              </ThemeProvider>
-          </BrowserRouter>
+          <PersistGate persistor={persistor}>
+              <BrowserRouter>
+                  <ThemeProvider theme={theme}>
+                      <App />
+                  </ThemeProvider>
+              </BrowserRouter>
+          </PersistGate>
+
       </Provider>
 );
 

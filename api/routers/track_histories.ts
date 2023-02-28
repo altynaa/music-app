@@ -33,6 +33,8 @@ track_historiesRouter.post('/', auth, async (req, res, next) => {
                 next(e);
             }
         }
+    } else {
+        throw new Error('Track was not found');
     }
 });
 

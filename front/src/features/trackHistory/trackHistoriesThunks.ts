@@ -1,21 +1,21 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {HistoryMutation, TrackHistory} from "../../types";
+import {GlobalError, HistoryMutation, TrackHistory} from "../../types";
 import {RootState} from "../../app/store";
 import axiosApi from "../../axiosApi";
+import {isAxiosError} from "axios";
 
-
-
-export const addTrackHistory = createAsyncThunk<void, HistoryMutation, {state: RootState}>(
+export const addTrackHistory = createAsyncThunk<void, HistoryMutation, {state: RootState, rejectValue: GlobalError}>(
     'track_history/add',
-    async (track, {getState}) => {
-        const user = getState().users.user;
-
-        if (user) {
-            console.log(track);
-             await axiosApi.post('/track_history', track, {headers: {'Authorization': user.token}});
-            // return response.data
-            // console.log(user.token);
-            // await axiosApi.post('/track_history', {headers: {'Authorization': user.token}});
+    async (track, {getState, rejectWithValue}) => {
+        try {
+            const user = getState().users.user;
+            if (user) {
+                await axiosApi.post('/track_history', track, {headers: {'Authorization': user.token}});
+            }
+        } catch (e) {
+            if (isAxiosError(e) && e.response && e.response.status === 400) {
+                return rejectWithValue(e.response.data as GlobalError);
+            } throw (e);
         }
     }
 );
