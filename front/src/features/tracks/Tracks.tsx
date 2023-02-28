@@ -15,6 +15,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import {selectUser} from "../users/usersSlice";
+import {addTrackHistory} from "../trackHistory/trackHistoriesThunks";
+import {HistoryMutation} from "../../types";
 
 const Tracks = () => {
     const dispatch = useAppDispatch();
@@ -24,6 +26,7 @@ const Tracks = () => {
     const album = useAppSelector(selectOneAlbum);
     const user = useAppSelector(selectUser);
 
+
     useEffect(() => {
         if (id) {
             dispatch(fetchTracks(id));
@@ -31,6 +34,9 @@ const Tracks = () => {
         }
     }, [dispatch]);
 
+    const addTrackToHistory = async (track: HistoryMutation) => {
+        await dispatch(addTrackHistory(track));
+    };
 
     return (
         <Grid container direction="column" spacing={2}>
@@ -67,8 +73,8 @@ const Tracks = () => {
                                     <TableCell align="left">{track.title}</TableCell>
                                     <TableCell align="left">{track.length}</TableCell>
                                     {user &&  <TableCell align="center">
-                                        <Button onClick={() => console.log({track})}><PlayArrowIcon/></Button>
-                                    </TableCell> }
+                                        <Button onClick={() => addTrackToHistory({track: track._id})}> <PlayArrowIcon/></Button>
+                                    </TableCell>}
                                 </TableRow>
                             ))}
                         </TableBody>

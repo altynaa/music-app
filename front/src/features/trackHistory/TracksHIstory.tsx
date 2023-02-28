@@ -21,7 +21,6 @@ const TracksHistory = () => {
     const history = useAppSelector(selectTrackHistories);
     const trackHistoryLoading = useAppSelector(selectTracksHistLoading);
 
-
     useEffect(() => {
         dispatch(fetchTrackHistory());
     }, [dispatch]);
