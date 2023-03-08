@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import Album from "../models/Album";
 import {imagesUpload} from "../multer";
 import auth, {RequestWithUser} from "../middleware/auth";
+import permit from "../middleware/permit";
 
 const albumsRouter = express.Router();
 
@@ -44,7 +45,8 @@ albumsRouter.post('/', auth, imagesUpload.single('image'), async (req, res, next
             artist: req.body.artist,
             releasedAt: req.body.releasedAt,
             image: req.file ? req.file.filename : null,
-            isPublished: false
+            isPublished: false,
+            user: user._id.toString()
         });
 
         return res.send(album);
@@ -54,6 +56,34 @@ albumsRouter.post('/', auth, imagesUpload.single('image'), async (req, res, next
             return res.status(400).send(e);
         } else {
             return next(e);
+        }
+    }
+});
+
+albumsRouter.delete('/:id', auth, permit('user', 'admin'), async (req, res, next) => {
+    try {
+        const user = (req as RequestWithUser).user;
+        const album = await Album.findById(req.params.id).populate('user');
+
+        if (!user) {
+            return res.send({error: 'Please log in to delete user'});
+        }
+        if (!album) {
+            return res.send({error: 'Album was not found'});
+        }
+        if (user.role === 'admin' || user._id.toString() === album.user._id.toString() && album.isPublished === false) {
+            const deleteAlbum = await Album.findByIdAndRemove(req.params.id);
+            if (deleteAlbum) {
+                return res.send({message: 'Album was deleted'});
+            }
+        } else {
+            return res.status(403).send({error: 'No authorization to delete'});
+        }
+    } catch (e) {
+        if (e instanceof mongoose.Error.ValidationError) {
+            return res.status(400).send(e);
+        } else {
+            return next (e);
         }
     }
 });
