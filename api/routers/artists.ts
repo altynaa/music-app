@@ -3,12 +3,13 @@ import mongoose from "mongoose";
 import Artist from "../models/Artist";
 import {imagesUpload} from "../multer";
 import auth, {RequestWithUser} from "../middleware/auth";
+import permit from "../middleware/permit";
 
 const artistsRouter = express.Router();
 
 artistsRouter.get('/', async (req, res) => {
     try {
-        const artists = await Artist.find();
+        const artists = await Artist.find().populate('user');
         return res.send(artists);
 
     } catch {
@@ -38,6 +39,7 @@ artistsRouter.post('/', auth, imagesUpload.single('image'), async (req, res, nex
             image: req.file ? req.file.filename : null,
             information: req.body.information,
             isPublished: false,
+            user: user._id.toString()
         });
 
         return res.send(artist);
@@ -49,5 +51,32 @@ artistsRouter.post('/', auth, imagesUpload.single('image'), async (req, res, nex
         }
     }
 });
+
+artistsRouter.delete('/:id', auth, permit('user', 'admin'), async (req, res, next) => {
+    try {
+        const user = (req as RequestWithUser).user;
+        const artist = await Artist.findById(req.params.id);
+        if (!user) {
+            return res.send({error: "Please log in to delete"});
+        }
+        if (!artist) {
+            return res.status(400).send({error: 'Artist was not found'});
+        }
+        if (user.role === 'admin' || user._id.toString() === artist.user._id.toString() && artist.isPublished === false) {
+            const deleteArtist = await Artist.findByIdAndRemove(req.params.id);
+            if (deleteArtist) {
+                return res.send({message: 'Deleted successfully'});
+            }
+        }
+        return res.status(403).send({error: 'No authorization to delete'});
+
+    } catch (e) {
+        if (e instanceof mongoose.Error.ValidationError) {
+            return res.status(400).send(e);
+        } else {
+            return next(e);
+        }
+    }
+})
 
 export default artistsRouter;

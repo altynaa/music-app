@@ -16,6 +16,7 @@ const ArtistSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User',
+        required: true,
         validate: {
             validator: (value: Types.ObjectId) => User.findOne(value),
             message: 'User was not found'
