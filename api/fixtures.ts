@@ -159,11 +159,13 @@ const run = async () => {
     await User.create({
         username: "Jane Smith",
         password: "Janepassword",
-        token: randomUUID()
+        token: randomUUID(),
+        role: 'admin'
     }, {
         username: "John Smith",
         password: "Johnpassword",
-        token: randomUUID()
+        token: randomUUID(),
+        role: 'user'
     });
 
     await db.close();

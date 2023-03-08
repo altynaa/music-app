@@ -2,7 +2,7 @@ export interface IArtist {
     name: string;
     image: string | null;
     information: string;
-    // isPublished: boolean
+    isPublished: boolean
 }
 
 export interface IAlbum {
@@ -10,7 +10,7 @@ export interface IAlbum {
     artist: string;
     releasedAt: number;
     image: string | null;
-    // isPublished: boolean
+    isPublished: boolean
 }
 
 export interface ITrack {
@@ -18,7 +18,7 @@ export interface ITrack {
     album: string;
     length: string;
     ordNumber: number;
-    // isPublished: boolean
+    isPublished: boolean
 }
 
 export interface IUser {

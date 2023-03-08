@@ -1,5 +1,6 @@
-import mongoose from "mongoose";
+import mongoose, {Types} from "mongoose";
 import {Schema} from "mongoose";
+import User from "./User";
 
 const ArtistSchema = new Schema({
     name: {
@@ -11,6 +12,14 @@ const ArtistSchema = new Schema({
     isPublished: {
         type: Boolean,
         default: false
+    },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        validate: {
+            validator: (value: Types.ObjectId) => User.findOne(value),
+            message: 'User was not found'
+        }
     }
 });
 

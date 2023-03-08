@@ -1,7 +1,7 @@
 import express from "express";
 import Track from "../models/Track";
-import {ITrack} from "../types";
 import mongoose from "mongoose";
+import auth, {RequestWithUser} from "../middleware/auth";
 
 const tracksRouter = express.Router();
 
@@ -19,22 +19,26 @@ tracksRouter.get('/', async (req, res) => {
     }
 });
 
-tracksRouter.post('/', async (req, res, next) => {
-    const trackData: ITrack = {
-        title: req.body.title,
-        album: req.body.album,
-        length: req.body.length,
-        ordNumber: req.body.ordNumber
-    };
-
-    const track = new Track(trackData);
+tracksRouter.post('/', auth, async (req, res, next) => {
     try {
-        await track.save();
+        const user = (req as RequestWithUser).user;
+        if (!user) {
+            return {error: 'Please log in to submit track'};
+        }
+
+        const track = await Track.create({
+            title: req.body.title,
+            album: req.body.album,
+            length: req.body.length,
+            ordNumber: req.body.ordNumber,
+            isPublished: false
+        });
+
         return res.send(track);
     } catch (e) {
         if (e instanceof mongoose.Error.ValidationError) {
             return res.status(400).send(e);
-        } else  {
+        } else {
             next(e);
         }
     }

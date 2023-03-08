@@ -1,8 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
 import Album from "../models/Album";
-import {IAlbum} from "../types";
 import {imagesUpload} from "../multer";
+import auth, {RequestWithUser} from "../middleware/auth";
 
 const albumsRouter = express.Router();
 
@@ -15,7 +15,7 @@ albumsRouter.get('/', async (req, res) => {
             const albums = await Album.find().sort({releasedAt: -1});
             return res.send(albums);
         }
-    } catch  {
+    } catch {
         return res.sendStatus(500);
     }
 });
@@ -32,17 +32,22 @@ albumsRouter.get('/:id', async (req, res) => {
     }
 });
 
-albumsRouter.post('/', imagesUpload.single('image'), async (req, res, next) => {
-    const albumData: IAlbum = {
-        title: req.body.title,
-        artist: req.body.artist,
-        releasedAt: req.body.releasedAt,
-        image: req.file ? req.file.filename : null
-    };
-    const album = new Album(albumData);
+albumsRouter.post('/', auth, imagesUpload.single('image'), async (req, res, next) => {
     try {
-        await album.save();
-        return  res.send(album);
+        const user = (req as RequestWithUser).user;
+        if (!user) {
+            return {error: 'Please log in to submit album'}
+        }
+
+        const album = await Album.create({
+            title: req.body.title,
+            artist: req.body.artist,
+            releasedAt: req.body.releasedAt,
+            image: req.file ? req.file.filename : null,
+            isPublished: false
+        });
+
+        return res.send(album);
 
     } catch (e) {
         if (e instanceof mongoose.Error.ValidationError) {
