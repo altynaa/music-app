@@ -3,7 +3,7 @@ import {IUser} from "../types";
 import {NextFunction, Request, Response} from "express";
 import User from "../models/User";
 
-export interface RequestWithUser extends Request {
+export interface    RequestWithUser extends Request {
     user: HydratedDocument<IUser>
 }
 

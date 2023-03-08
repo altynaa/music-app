@@ -23,6 +23,10 @@ const TrackSchema = new Schema({
     ordNumber: {
         type: Number,
         required: true
+    },
+    isPublished: {
+        type: Boolean,
+        default: false
     }
 });
 

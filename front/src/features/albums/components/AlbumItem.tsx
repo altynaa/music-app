@@ -23,7 +23,7 @@ const AlbumItem: React.FC<Props> = ({id, title, image, releasedAt}) => {
     }
 
     return (
-        <Grid item xs={12} sm={6} md={4} lg={3}>
+        <Grid item xs={12} sm={6} md={4} lg={3} style={{maxHeight: 5}}>
             <Card component={Link} to={'/tracks/' + id}>
                 <CardActionArea>
                     <CardHeader title={title}/>
