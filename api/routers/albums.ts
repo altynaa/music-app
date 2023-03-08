@@ -83,9 +83,38 @@ albumsRouter.delete('/:id', auth, permit('user', 'admin'), async (req, res, next
         if (e instanceof mongoose.Error.ValidationError) {
             return res.status(400).send(e);
         } else {
-            return next (e);
+            return next(e);
         }
     }
 });
+
+albumsRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
+    try {
+    const album = await Album.findById(req.params.id);
+
+
+    if (!album) {
+        return res.send({error: 'Album was not found'});
+    }
+    let newAlbum;
+
+    if (album.isPublished === true) {
+       newAlbum = {
+           isPublished: false
+       }
+    } else {
+        newAlbum = {
+            isPublished: true
+        }
+    }
+    const updatedAlbum = await Album.findByIdAndUpdate(req.params.id, newAlbum);
+    return res.send(updatedAlbum);
+
+    } catch (e) {
+        if (e instanceof mongoose.Error.ValidationError) {
+            return res.status(400).send(e);
+        } return next(e);
+    }
+})
 
 export default albumsRouter;

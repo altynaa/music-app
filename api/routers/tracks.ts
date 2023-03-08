@@ -72,6 +72,34 @@ tracksRouter.delete('/:id', auth, permit('admin', 'user'), async (req, res, next
             next(e);
         }
     }
+});
+
+tracksRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
+    try{
+        const track = await Track.findById(req.params.id);
+        if (!track) {
+            return res.send({error: 'Track was not found'});
+        }
+        let newTrack;
+        if (track.isPublished === true) {
+            newTrack = {
+                isPublished: false
+            }
+        } else {
+            newTrack = {
+                isPublished: true
+            }
+        }
+        const updatedTrack = await Track.findByIdAndUpdate(req.params.id, newTrack);
+        return res.send(updatedTrack);
+
+    } catch (e) {
+        if (e instanceof mongoose.Error.ValidationError) {
+            return res.status(400).send(e);
+        } else {
+            next(e);
+        }
+    }
 })
 
 export default tracksRouter;

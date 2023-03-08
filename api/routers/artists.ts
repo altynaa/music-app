@@ -77,6 +77,34 @@ artistsRouter.delete('/:id', auth, permit('user', 'admin'), async (req, res, nex
             return next(e);
         }
     }
+});
+
+artistsRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
+    try {
+        const artist = await Artist.findById(req.params.id);
+        if (!artist) {
+            return res.status(400).send({error: 'Artist was not found'});
+        }
+        let newArtist;
+
+        if (artist.isPublished === true) {
+            newArtist = {
+                isPublished: false
+            }
+        } else {
+            newArtist = {
+                isPublished: true
+            }
+        }
+        const updatedArtist = await Artist.findByIdAndUpdate(req.params.id, newArtist);
+        return res.send(updatedArtist);
+    } catch (e) {
+        if (e instanceof mongoose.Error.ValidationError) {
+            return res.status(400).send(e);
+        } else {
+            return next(e);
+        }
+    }
 })
 
 export default artistsRouter;
