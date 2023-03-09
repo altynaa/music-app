@@ -69,3 +69,9 @@ export interface TrackHistory {
 export interface HistoryMutation {
     track: string;
 }
+
+export interface ApiArtist {
+    name: string;
+    information: string;
+    image: File | null;
+}

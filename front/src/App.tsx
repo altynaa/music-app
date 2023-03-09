@@ -8,8 +8,13 @@ import Tracks from "./features/tracks/Tracks";
 import Register from "./features/users/Register";
 import Login from "./features/users/Login";
 import TracksHistory from "./features/trackHistory/TracksHIstory";
+import ArtistForm from "./features/artists/components/ArtistForm";
+import ProtectedRoot from "./components/ProtectedRoot/ProtectedRoot";
+import {useAppSelector} from "./app/hooks";
+import {selectUser} from "./features/users/usersSlice";
 
 function App() {
+    const user = useAppSelector(selectUser);
     return (
         <>
             <CssBaseline/>
@@ -26,6 +31,11 @@ function App() {
                         <Route path="/register" element={<Register/>}/>
                         <Route path="/login" element={<Login/>}/>
                         <Route path="/tracks_history" element={<TracksHistory/>}/>
+                        <Route path="/add-artist" element={(
+                            <ProtectedRoot isAllowed={user}>
+                                <ArtistForm/>
+                            </ProtectedRoot>
+                        )}/>
                         <Route path="*" element={<h2>Page not found</h2>}/>
                     </Routes>
                 </Container>

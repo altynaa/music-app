@@ -41,7 +41,7 @@ const UserMenu: React.FC<Props> = ({user}) => {
                 onClose={handleClose}
             >
                 <MenuItem component={Link} to="/tracks_history">Tracks History</MenuItem>
-                <MenuItem>Profile</MenuItem>
+                <MenuItem component={Link} to="/add-artist">Add Artist</MenuItem>
                 <MenuItem>My account</MenuItem>
                 <MenuItem
                 onClick={handleLogout}

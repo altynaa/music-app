@@ -77,6 +77,7 @@ const Register = () => {
                                 label="Password"
                                 name="password"
                                 autoComplete="new-password"
+                                type="password"
                                 value={regState.password}
                                 onChange={inputChangeHandler}
                                 error={Boolean(getFieldError('password'))}
