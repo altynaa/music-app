@@ -12,6 +12,8 @@ import ArtistForm from "./features/artists/components/ArtistForm";
 import ProtectedRoot from "./components/ProtectedRoot/ProtectedRoot";
 import {useAppSelector} from "./app/hooks";
 import {selectUser} from "./features/users/usersSlice";
+import AlbumForm from "./features/albums/components/AlbumForm";
+import TrackForm from "./features/tracks/components/TrackForm";
 
 function App() {
     const user = useAppSelector(selectUser);
@@ -34,6 +36,16 @@ function App() {
                         <Route path="/add-artist" element={(
                             <ProtectedRoot isAllowed={user}>
                                 <ArtistForm/>
+                            </ProtectedRoot>
+                        )}/>
+                        <Route path="/add-album" element={(
+                            <ProtectedRoot isAllowed={user}>
+                                <AlbumForm/>
+                            </ProtectedRoot>
+                        )}/>
+                        <Route path="/add-track" element={(
+                            <ProtectedRoot isAllowed={user}>
+                                <TrackForm/>
                             </ProtectedRoot>
                         )}/>
                         <Route path="*" element={<h2>Page not found</h2>}/>

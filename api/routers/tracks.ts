@@ -32,7 +32,8 @@ tracksRouter.post('/', auth, async (req, res, next) => {
             album: req.body.album,
             length: req.body.length,
             ordNumber: req.body.ordNumber,
-            isPublished: false
+            isPublished: false,
+            user: user._id.toString()
         });
 
         return res.send(track);

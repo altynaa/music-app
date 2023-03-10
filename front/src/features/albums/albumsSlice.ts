@@ -1,13 +1,15 @@
-import {Album} from "../../types";
+import {Album, ValidationError} from "../../types";
 import {createSlice} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
-import {fetchAlbums, fetchOneAlbum} from "./albumsThunks";
+import {addAlbum, fetchAlbums, fetchOneAlbum} from "./albumsThunks";
 
 interface AlbumsState {
-    albums: Album [],
-    albumsLoading: boolean,
+    albums: Album [];
+    albumsLoading: boolean;
     album: Album;
-    albumLoading: boolean
+    albumLoading: boolean;
+    albumAdding: boolean;
+    albumError: ValidationError | null
 }
 
 const initialState: AlbumsState = {
@@ -25,7 +27,9 @@ const initialState: AlbumsState = {
         releasedAt: 0,
         image: ''
     },
-    albumLoading: false
+    albumLoading: false,
+    albumAdding: false,
+    albumError: null
 };
 
 export const albumsSlice = createSlice({
@@ -55,6 +59,17 @@ export const albumsSlice = createSlice({
         builder.addCase(fetchOneAlbum.rejected, (state) => {
             state.albumLoading = false;
         });
+
+        builder.addCase(addAlbum.pending, (state) => {
+            state.albumAdding = true;
+        });
+        builder.addCase(addAlbum.fulfilled, (state) => {
+            state.albumAdding = false;
+        });
+        builder.addCase(addAlbum.rejected, (state, {payload: error}) => {
+            state.albumAdding = false;
+            state.albumError = error || null;
+        });
     }
 });
 
@@ -63,3 +78,5 @@ export const albumsReducer = albumsSlice.reducer;
 export const selectAlbums = (state: RootState) => state.albums.albums;
 export const selectAlbumsLoading = (state: RootState) => state.albums.albumsLoading;
 export const selectOneAlbum = (state: RootState) => state.albums.album;
+export const selectAlbumAdding = (state: RootState) => state.albums.albumAdding;
+export const selectAlbumError = (state: RootState) => state.albums.albumError;

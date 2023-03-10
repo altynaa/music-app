@@ -1,15 +1,17 @@
 import React, {useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import FileInput from "../../../components/UI/FileInput/FileInput";
-import {useAppDispatch} from "../../../app/hooks";
+import {useAppDispatch, useAppSelector} from "../../../app/hooks";
 import {ApiArtist} from "../../../types";
 import {addArtist} from "../artistsThunks";
-import {Grid, TextField, Typography} from '@mui/material';
+import {Box, CircularProgress, Grid, TextField, Typography} from '@mui/material';
 import {Button} from "@mui/material";
+import {selectArtistAdding} from "../artistsSlice";
 
 const ArtistForm = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const artistAdding = useAppSelector(selectArtistAdding);
     const [artist, setArtist] = useState<ApiArtist>({
         name: '',
         information: '',
@@ -25,8 +27,8 @@ const ArtistForm = () => {
 
     const inputFileChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, files} = e.target;
-        setArtist(prevState => ({
-            ...prevState, [name]: files && files[0] ? files[0] : null,
+        setArtist(prev => ({
+            ...prev, [name]: files && files[0] ? files[0] : null,
         }));
     };
 
@@ -74,8 +76,21 @@ const ArtistForm = () => {
                     />
                 </Grid>
 
+
                 <Grid item xs>
-                    <Button type="submit" color="primary" variant="contained">Create</Button>
+                    <Button
+                        type="submit"
+                        color="primary"
+                        variant="contained"
+                        disabled={artistAdding}
+                    >
+                        {artistAdding ?
+                            <Box sx={{display: 'flex'}}>
+                                <CircularProgress/>
+                            </Box> :
+                            "Add artist"
+                        }
+                    </Button>
                 </Grid>
             </Grid>
         </form>

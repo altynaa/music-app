@@ -75,3 +75,17 @@ export interface ApiArtist {
     information: string;
     image: File | null;
 }
+
+export interface ApiAlbum {
+    title: string;
+    artist: string;
+    releasedAt: string;
+    image: File | null
+}
+
+export interface ApiTrack {
+    title: string;
+    album: string;
+    length: string;
+    ordNumber: string;
+}
