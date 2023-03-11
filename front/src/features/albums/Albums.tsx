@@ -33,15 +33,17 @@ const Albums = () => {
             <Grid item container spacing={2}>
                 {albumsLoading ? <Box sx={{display: 'flex'}}>
                     <CircularProgress/>
-                </Box> : albums.map(album => (
+                </Box> : albums.length > 0 ?
+                    albums.map(album => (
                     <AlbumItem
                         key={album._id}
                         id={album._id}
                         title={album.title}
                         image={album.image}
                         releasedAt={album.releasedAt}
+                        isPublished={album.isPublished}
                     />
-                ))}
+                )) : 'There are no albums yet'}
 
             </Grid>
         </Grid>

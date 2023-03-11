@@ -49,4 +49,11 @@ export const addAlbum = createAsyncThunk<void, ApiAlbum, {rejectValue: Validatio
             throw e;
         }
     }
-)
+);
+
+export const deleteAlbum = createAsyncThunk<void, string>(
+    'albums/delete',
+    async (id) => {
+        await axiosApi.delete('/albums/' + id);
+    }
+);
