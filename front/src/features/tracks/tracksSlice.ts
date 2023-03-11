@@ -1,20 +1,22 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {Track, ValidationError} from "../../types";
 import {RootState} from "../../app/store";
-import {addTrack, fetchTracks} from "./tracksThunks";
+import {addTrack, deleteTrack, fetchTracks} from "./tracksThunks";
 
 interface TracksState {
     tracks: Track [];
     tracksLoading: boolean;
     trackAdding: boolean;
     trackAddingError: ValidationError | null;
+    trackDeleting: boolean
 }
 
 const initialState: TracksState = {
     tracks: [],
     tracksLoading: false,
     trackAdding: false,
-    trackAddingError: null
+    trackAddingError: null,
+    trackDeleting: false
 };
 
 export const tracksSlice = createSlice({
@@ -43,6 +45,16 @@ export const tracksSlice = createSlice({
             state.trackAdding = false;
             state.trackAddingError = error || null
         });
+
+        builder.addCase(deleteTrack.pending, (state) => {
+            state.trackDeleting = true;
+        });
+        builder.addCase(deleteTrack.fulfilled, (state) => {
+            state.trackDeleting = false;
+        });
+        builder.addCase(deleteTrack.rejected, (state) => {
+            state.trackDeleting = false;
+        });
     }
 });
 
@@ -52,3 +64,4 @@ export const selectTracks = (state: RootState) => state.tracks.tracks;
 export const selectTracksLoading = (state: RootState) => state.tracks.tracksLoading;
 export const selectTrackAdding = (state: RootState) => state.tracks.trackAdding;
 export const selectTrackAddingError = (state: RootState) => state.tracks.trackAddingError;
+export const selectTrackDeleting = (state: RootState) => state.tracks.trackDeleting;

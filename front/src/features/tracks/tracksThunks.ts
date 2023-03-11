@@ -25,3 +25,11 @@ export const addTrack = createAsyncThunk<void, ApiTrack, {rejectValue: Validatio
         }
     }
 );
+
+export const deleteTrack = createAsyncThunk<void, string>(
+    'tracks/delete',
+    async (id) => {
+        console.log(id)
+        await axiosApi.delete('/tracks/' + id);
+    }
+);

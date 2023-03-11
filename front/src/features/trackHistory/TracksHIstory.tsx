@@ -37,7 +37,10 @@ const TracksHistory = () => {
                 <Alert severity="error" sx={{mt: 3, width: '100%'}}>
                     {error.error}
                 </Alert>)}
-            <Grid item container spacing={2}>
+            {trackHistoryLoading ? <Box sx={{display: 'flex'}}>
+                    <CircularProgress/>
+                </Box> :
+                <Grid item container spacing={2}>
                 <TableContainer component={Paper}>
                     <Table sx={{minWidth: 650}} aria-label="simple table">
                         <TableHead>
@@ -48,9 +51,7 @@ const TracksHistory = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {trackHistoryLoading ? <Box sx={{display: 'flex'}}>
-                                <CircularProgress/>
-                            </Box> : history.map((item) => (
+                            {history.map((item) => (
                                 <TableRow
                                     key={item._id}
                                     sx={{'&:last-child td, &:last-child th': {border: 0}}}
@@ -65,7 +66,7 @@ const TracksHistory = () => {
                         </TableBody>
                     </Table>
                 </TableContainer>
-            </Grid>
+            </Grid>}
         </>
     );
 };

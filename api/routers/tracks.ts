@@ -71,7 +71,7 @@ tracksRouter.delete('/:id', auth, permit('admin', 'user'), async (req, res, next
             return res.send({error: 'Track was not found'});
         }
         if (user.role === 'admin' || user._id.toString() === track.user._id.toString() && track.isPublished === false) {
-            const deleteTrack = await Track.findById(req.params.id);
+            const deleteTrack = await Track.findByIdAndRemove(req.params.id);
             if (deleteTrack) {
                 return res.send({message: 'Track was deleted'});
             }

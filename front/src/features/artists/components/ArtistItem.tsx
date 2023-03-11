@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link, useNavigate} from "react-router-dom";
+import {Link} from "react-router-dom";
 import noImageAvailable from '../../../assets/images/noImageAvailable.jpg';
 import {apiURL} from "../../../constants";
 import {
@@ -34,7 +34,6 @@ interface Props {
 
 const ArtistItem: React.FC<Props> = ({id, name, image, isPublished}) => {
     const dispatch = useAppDispatch();
-    const navigate = useNavigate();
     const user = useAppSelector(selectUser);
     const deleting = useAppSelector(selectArtistDeleting);
 
@@ -46,8 +45,7 @@ const ArtistItem: React.FC<Props> = ({id, name, image, isPublished}) => {
     const handleDelete = async (id: string) => {
         await dispatch(deleteArtist(id));
         await dispatch(fetchArtists());
-        navigate('/');
-    }
+    };
 
     return (
         <Grid item xs={12} sm={6} md={4} lg={3}>

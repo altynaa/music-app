@@ -1,8 +1,8 @@
 import React, {useEffect} from 'react';
 import {useParams} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {selectTracks, selectTracksLoading} from "./tracksSlice";
-import {fetchTracks} from "./tracksThunks";
+import {selectTrackDeleting, selectTracks, selectTracksLoading} from "./tracksSlice";
+import {deleteTrack, fetchTracks} from "./tracksThunks";
 import {fetchOneAlbum} from "../albums/albumsThunks";
 import {selectOneAlbum} from "../albums/albumsSlice";
 import {selectUser} from "../users/usersSlice";
@@ -18,6 +18,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const Tracks = () => {
     const dispatch = useAppDispatch();
@@ -27,6 +28,7 @@ const Tracks = () => {
     const album = useAppSelector(selectOneAlbum);
     const user = useAppSelector(selectUser);
     const trackAdding = useAppSelector(selectTracksHistAdding);
+    const deleting = useAppSelector(selectTrackDeleting);
 
     useEffect(() => {
         if (id) {
@@ -37,6 +39,13 @@ const Tracks = () => {
 
     const addTrackToHistory = async (track: HistoryMutation) => {
         await dispatch(addTrackHistory(track));
+    };
+
+    const handleDelete = async (trackId: string) => {
+        await dispatch(deleteTrack(trackId));
+        if (id) {
+            await dispatch(fetchTracks(id));
+        }
     };
 
     return (
@@ -57,10 +66,12 @@ const Tracks = () => {
                         <Table sx={{minWidth: 650}} aria-label="simple table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>#</TableCell>
+                                    <TableCell align="left">Order number in the album</TableCell>
                                     <TableCell align="left">Name of track</TableCell>
                                     <TableCell align="left">Time</TableCell>
                                     {user && <TableCell align="center">Play</TableCell>}
+                                    {user?.role === 'admin' && <TableCell align="left">Info</TableCell>}
+                                    {user?.role === 'admin' && <TableCell align="center">Delete</TableCell>}
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -69,7 +80,7 @@ const Tracks = () => {
                                         key={track._id}
                                         sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                     >
-                                        <TableCell component="th" scope="row">
+                                        <TableCell align="left">
                                             {track.ordNumber}
                                         </TableCell>
                                         <TableCell align="left">{track.title}</TableCell>
@@ -84,13 +95,33 @@ const Tracks = () => {
                                                 </Button>
                                             </TableCell>
                                         }
+                                        {user?.role === 'admin' &&
+                                            <TableCell align="left">
+                                                {track.isPublished ? 'Track was published' : 'Track was not published yet'}
+                                            </TableCell>
+                                        }
+                                        {user?.role === 'admin' &&
+                                            <TableCell align="center">
+                                                <Button
+                                                    variant="contained"
+                                                    onClick={() => handleDelete(track._id)}
+                                                    disabled={deleting}
+                                                >
+
+                                                    {deleting ?
+                                                        <Box sx={{display: 'flex'}}>
+                                                        <CircularProgress/>
+                                                        </Box> :  <DeleteIcon/>
+                                                    }
+                                                </Button>
+                                            </TableCell>
+                                        }
                                     </TableRow>
                                 ))}
                             </TableBody>
                         </Table>
                     </TableContainer>
-                </Grid>
-            }
+                </Grid>}
         </Grid>
     );
 };

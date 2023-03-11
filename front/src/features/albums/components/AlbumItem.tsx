@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link, useNavigate, useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import noImageAvailable from "../../../assets/images/noImageAvailable.jpg";
 import {apiURL} from "../../../constants";
 import {
@@ -20,7 +20,7 @@ import {selectAlbumDeleting} from "../albumsSlice";
 import {deleteAlbum, fetchAlbums} from "../albumsThunks";
 
 interface Props {
-    id: string,
+    trackId: string,
     title: string,
     image: string,
     releasedAt: number,
@@ -32,10 +32,9 @@ const ImageCardMedia = styled(CardMedia)({
     paddingTop: '56.25%',
 });
 
-const AlbumItem: React.FC<Props> = ({id, title, image, releasedAt, isPublished}) => {
+const AlbumItem: React.FC<Props> = ({trackId, title, image, releasedAt, isPublished}) => {
     const dispatch = useAppDispatch();
-    const navigate = useNavigate();
-    const {pageId} = useParams();
+    const {id} = useParams();
     const user = useAppSelector(selectUser);
     const deleting = useAppSelector(selectAlbumDeleting);
 
@@ -44,10 +43,9 @@ const AlbumItem: React.FC<Props> = ({id, title, image, releasedAt, isPublished})
         cardImage = apiURL + '/' + image;
     }
 
-    const handleDelete = async (id: string) => {
-        await dispatch(deleteAlbum(id));
-        await dispatch(fetchAlbums(pageId));
-        navigate('/');
+    const handleDelete = async (trackId: string) => {
+        await dispatch(deleteAlbum(trackId));
+        await dispatch(fetchAlbums(id));
     };
 
     return (
@@ -64,7 +62,7 @@ const AlbumItem: React.FC<Props> = ({id, title, image, releasedAt, isPublished})
                             <Typography>{isPublished ? 'Album was published' : 'Album was not published yet'} </Typography>
                             <Button
                                 variant="contained"
-                                onClick={() => handleDelete(id)}
+                                onClick={() => handleDelete(trackId)}
                                 disabled={deleting}
                             >
                                 {deleting ?
