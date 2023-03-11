@@ -2,7 +2,8 @@ export interface Artist {
     _id: string;
     name: string;
     information: string;
-    image: string
+    image: string;
+    isPublished: boolean
 }
 
 export interface Album {
@@ -10,7 +11,8 @@ export interface Album {
     title: string;
     artist: Artist;
     releasedAt: number;
-    image: string
+    image: string;
+    isPublished: boolean
 }
 
 export interface Track {
@@ -18,7 +20,8 @@ export interface Track {
     title: string;
     album: string;
     length: string;
-    ordNumber: number
+    ordNumber: number;
+    isPublished: boolean
 }
 
 export interface RegistrationMutation {
@@ -29,7 +32,8 @@ export interface RegistrationMutation {
 export interface User {
     _id: string;
     username: string;
-    token: string
+    token: string;
+    role: string;
 }
 
 export interface UserResponse {

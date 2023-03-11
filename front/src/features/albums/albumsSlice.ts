@@ -22,10 +22,12 @@ const initialState: AlbumsState = {
             _id: '',
             name: '',
             information: '',
-            image: ''
+            image: '',
+            isPublished: false
         },
         releasedAt: 0,
-        image: ''
+        image: '',
+        isPublished: false
     },
     albumLoading: false,
     albumAdding: false,

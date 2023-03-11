@@ -1,8 +1,23 @@
 import React from 'react';
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import noImageAvailable from '../../../assets/images/noImageAvailable.jpg';
 import {apiURL} from "../../../constants";
-import {Card, CardActionArea, CardHeader, CardMedia, Grid, styled} from "@mui/material";
+import {
+    Box,
+    Button,
+    Card,
+    CardActionArea,
+    CardContent,
+    CardHeader,
+    CardMedia, CircularProgress,
+    Grid,
+    styled,
+    Typography
+} from "@mui/material";
+import {useAppDispatch, useAppSelector} from "../../../app/hooks";
+import {selectUser} from "../../users/usersSlice";
+import {selectArtistDeleting} from "../artistsSlice";
+import {deleteArtist, fetchArtists} from "../artistsThunks";
 
 
 const ImageCardMedia = styled(CardMedia)({
@@ -13,22 +28,51 @@ const ImageCardMedia = styled(CardMedia)({
 interface Props {
     id: string,
     name: string,
-    image: string
+    image: string,
+    isPublished: boolean
 }
 
-const ArtistItem: React.FC<Props> = ({id, name, image}) => {
+const ArtistItem: React.FC<Props> = ({id, name, image, isPublished}) => {
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    const user = useAppSelector(selectUser);
+    const deleting = useAppSelector(selectArtistDeleting);
+
     let cardImage = noImageAvailable;
     if (image) {
         cardImage = apiURL + '/' + image;
     }
 
+    const handleDelete = async (id: string) => {
+        await dispatch(deleteArtist(id));
+        await dispatch(fetchArtists());
+        navigate('/');
+    }
+
     return (
         <Grid item xs={12} sm={6} md={4} lg={3}>
-            <Card component={Link} to={'/albums/' + id}>
-                <CardActionArea >
+            <Card>
+                <CardActionArea component={Link} to={'/albums/' + id}>
                     <CardHeader title={name}/>
                     <ImageCardMedia image={cardImage} title={name}/>
                 </CardActionArea>
+
+                {user?.role === 'admin' &&
+                    <CardContent>
+                        <Typography>{isPublished ? 'Artist was published' : 'Artist was not published yet'} </Typography>
+                        <Button
+                            variant="contained"
+                            onClick={() => handleDelete(id)}
+                            disabled={deleting}
+                        >
+                            {deleting ?
+                                <Box sx={{display: 'flex'}}>
+                                    <CircularProgress/>
+                                </Box> : 'Delete'
+                            }
+                        </Button>
+                    </CardContent>
+                }
             </Card>
         </Grid>
     );

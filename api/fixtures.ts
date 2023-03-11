@@ -46,7 +46,7 @@ const run = async () => {
         user: johnUser._id
     }, {
         name: "BTS",
-        image: "fixtures/rihanna.jpeg",
+        image: "fixtures/bts.jpg",
         information: "K-POP band",
         isPublished: false,
         user: johnUser._id

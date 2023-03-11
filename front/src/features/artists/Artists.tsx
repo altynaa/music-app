@@ -15,7 +15,7 @@ const Artists = () => {
     }, [dispatch]);
 
     return (
-        <Grid container direction="column" spacing={2}>
+        <Grid container direction="column" spacing={2} padding={2}>
             <Grid item container justifyContent="space-between" alignItems="center">
                 <Grid item>
                     <Typography variant="h4">
@@ -27,15 +27,16 @@ const Artists = () => {
                 {artistsLoading ?
                     <Box sx={{display: 'flex'}}>
                         <CircularProgress/>
-                    </Box> :
+                    </Box> : artists.length > 0 ?
                     artists.map(artist => (
                         <ArtistItem
                             key={artist._id}
                             id={artist._id}
                             name={artist.name}
                             image={artist.image}
+                            isPublished={artist.isPublished}
                         />
-                    ))}
+                    )) : 'There are no artists yet'}
             </Grid>
         </Grid>
     );

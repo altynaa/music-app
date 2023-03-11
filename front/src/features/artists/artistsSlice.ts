@@ -1,7 +1,7 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {Artist} from "../../types";
 import {RootState} from "../../app/store";
-import {addArtist, fetchArtists, fetchOneArtist} from "./artistsThunks";
+import {addArtist, deleteArtist, fetchArtists, fetchOneArtist} from "./artistsThunks";
 
 interface ArtistsState {
     artists: Artist [];
@@ -9,6 +9,7 @@ interface ArtistsState {
     oneArtistLoading: boolean;
     oneArtist: Artist;
     artistAdding: boolean;
+    artistDeleting: boolean
 }
 const initialState: ArtistsState = {
     artists: [],
@@ -18,9 +19,11 @@ const initialState: ArtistsState = {
         _id: '',
         name: '',
         information: '',
-        image: ''
+        image: '',
+        isPublished: false
     },
-    artistAdding: false
+    artistAdding: false,
+    artistDeleting: false,
 };
 
 export const artistsSlice = createSlice({
@@ -59,6 +62,16 @@ export const artistsSlice = createSlice({
         builder.addCase(addArtist.rejected, (state) => {
             state.artistAdding = false;
         });
+
+        builder.addCase(deleteArtist.pending, (state) => {
+            state.artistDeleting = true;
+        });
+        builder.addCase(deleteArtist.fulfilled, (state) => {
+            state.artistDeleting = false;
+        });
+        builder.addCase(deleteArtist.rejected, (state) => {
+            state.artistDeleting = false;
+        });
     }
 
 });
@@ -69,4 +82,5 @@ export const selectArtists = (state: RootState) => state.artists.artists;
 export const selectArtistsLoading = (state: RootState) => state.artists.artistsLoading;
 export const selectOneArtist = (state: RootState) => state.artists.oneArtist;
 export const selectArtistAdding = (state: RootState) => state.artists.artistAdding;
+export const selectArtistDeleting = (state: RootState) => state.artists.artistDeleting;
 
