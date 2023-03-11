@@ -3,17 +3,30 @@ import Track from "../models/Track";
 import mongoose from "mongoose";
 import auth, {RequestWithUser} from "../middleware/auth";
 import permit from "../middleware/permit";
+import role from "../middleware/role";
 
 const tracksRouter = express.Router();
 
-tracksRouter.get('/', async (req, res) => {
+tracksRouter.get('/', role, async (req, res) => {
     try {
+        const user = (req as RequestWithUser).user;
         if (req.query.album) {
-            const tracks = await Track.find({album: req.query.album}).sort({ordNumber: 1});
-            return res.send(tracks);
+            if (user.role === 'admin') {
+                const tracks = await Track.find({album: req.query.album}).sort({ordNumber: 1});
+                return res.send(tracks);
+            } else {
+                const tracks = await Track.find({album: req.query.album, isPublished: true}).sort({ordNumber: 1});
+                return res.send(tracks);
+            }
         } else {
-            const tracks = await Track.find().sort({ordNumber: 1});
-            return res.send(tracks);
+            if (user.role === 'admin') {
+                const tracks = await Track.find().sort({ordNumber: 1});
+                return res.send(tracks);
+            } else {
+                const tracks = await Track.find({isPublished: true}).sort({ordNumber: 1});
+                return res.send(tracks);
+            }
+
         }
     } catch {
         return res.sendStatus(500);

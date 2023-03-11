@@ -4,17 +4,30 @@ import Album from "../models/Album";
 import {imagesUpload} from "../multer";
 import auth, {RequestWithUser} from "../middleware/auth";
 import permit from "../middleware/permit";
+import role from "../middleware/role";
 
 const albumsRouter = express.Router();
 
-albumsRouter.get('/', async (req, res) => {
+albumsRouter.get('/', role, async (req, res) => {
     try {
+        const user = (req as RequestWithUser).user;
         if (req.query.artist) {
-            const albums = await Album.find({artist: req.query.artist}).sort({releasedAt: -1});
-            res.send(albums);
+            if (user.role === 'admin') {
+                const albums = await Album.find({artist: req.query.artist}).sort({releasedAt: -1});
+                res.send(albums);
+            } else {
+                const albums = await Album.find({artist: req.query.artist, isPublished: true}).sort({releasedAt: -1});
+                res.send(albums);
+            }
+
         } else {
-            const albums = await Album.find().sort({releasedAt: -1});
-            return res.send(albums);
+            if (user.role === 'admin') {
+                const albums = await Album.find().sort({releasedAt: -1});
+                return res.send(albums);
+            } else {
+                const albums = await Album.find({isPublished: true}).sort({releasedAt: -1});
+                return res.send(albums);
+            }
         }
     } catch {
         return res.sendStatus(500);

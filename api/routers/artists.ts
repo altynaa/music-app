@@ -4,13 +4,20 @@ import Artist from "../models/Artist";
 import {imagesUpload} from "../multer";
 import auth, {RequestWithUser} from "../middleware/auth";
 import permit from "../middleware/permit";
+import role from "../middleware/role";
 
 const artistsRouter = express.Router();
 
-artistsRouter.get('/', async (req, res) => {
+artistsRouter.get('/', role, async (req, res) => {
     try {
-        const artists = await Artist.find().populate('user');
-        return res.send(artists);
+        const user = (req as RequestWithUser).user;
+        if (user.role === 'admin') {
+            const artists = await Artist.find().populate('user');
+            return res.send(artists);
+        } else {
+            const artists = await Artist.find({isPublished: true}).populate('user');
+            return res.send(artists);
+        }
 
     } catch {
         return res.sendStatus(500)

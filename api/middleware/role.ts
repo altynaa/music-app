@@ -7,20 +7,20 @@ export interface RequestWithUser extends Request {
     user: HydratedDocument<IUser>
 }
 
-const auth = async (expressReq: Request, res: Response, next: NextFunction) => {
+const role = async (expressReq: Request, res: Response, next: NextFunction) => {
     const req = expressReq as RequestWithUser;
     const token = req.get('Authorization');
 
     if (!token) {
-        return res.status(401).send({error: 'No token'});
+        return next();
     }
     const user = await User.findOne({token});
 
     if (!user) {
-        return res.status(401).send({error: 'Wrong token'});
+        return next();
     }
     req.user = user;
     return next();
 }
 
-export default auth;
+export default role;
