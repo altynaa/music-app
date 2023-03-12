@@ -12,20 +12,20 @@ albumsRouter.get('/', role, async (req, res) => {
     try {
         const user = (req as RequestWithUser).user;
         if (req.query.artist) {
-            if (user.role === 'admin') {
-                const albums = await Album.find({artist: req.query.artist}).sort({releasedAt: -1});
+            if (!user || user.role != 'admin') {
+                const albums = await Album.find({artist: req.query.artist, isPublished: true}).sort({releasedAt: -1});
                 res.send(albums);
             } else {
-                const albums = await Album.find({artist: req.query.artist, isPublished: true}).sort({releasedAt: -1});
+                const albums = await Album.find({artist: req.query.artist}).sort({releasedAt: -1});
                 res.send(albums);
             }
 
         } else {
-            if (user.role === 'admin') {
-                const albums = await Album.find().sort({releasedAt: -1});
+            if (!user || user.role != 'admin') {
+                const albums = await Album.find({isPublished: true}).sort({releasedAt: -1});
                 return res.send(albums);
             } else {
-                const albums = await Album.find({isPublished: true}).sort({releasedAt: -1});
+                const albums = await Album.find().sort({releasedAt: -1});
                 return res.send(albums);
             }
         }

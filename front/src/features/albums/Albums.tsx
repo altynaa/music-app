@@ -37,7 +37,7 @@ const Albums = () => {
                     albums.map(album => (
                     <AlbumItem
                         key={album._id}
-                        trackId={album._id}
+                        albumId={album._id}
                         title={album.title}
                         image={album.image}
                         releasedAt={album.releasedAt}

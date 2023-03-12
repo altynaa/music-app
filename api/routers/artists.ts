@@ -11,14 +11,13 @@ const artistsRouter = express.Router();
 artistsRouter.get('/', role, async (req, res) => {
     try {
         const user = (req as RequestWithUser).user;
-        if (user.role === 'admin') {
-            const artists = await Artist.find().populate('user');
-            return res.send(artists);
-        } else {
+        if (!user || user.role != 'admin') {
             const artists = await Artist.find({isPublished: true}).populate('user');
             return res.send(artists);
+        } else {
+            const artists = await Artist.find().populate('user');
+            return res.send(artists);
         }
-
     } catch {
         return res.sendStatus(500)
     }

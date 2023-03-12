@@ -20,7 +20,7 @@ import {selectAlbumDeleting} from "../albumsSlice";
 import {deleteAlbum, fetchAlbums} from "../albumsThunks";
 
 interface Props {
-    trackId: string,
+    albumId: string,
     title: string,
     image: string,
     releasedAt: number,
@@ -32,7 +32,7 @@ const ImageCardMedia = styled(CardMedia)({
     paddingTop: '56.25%',
 });
 
-const AlbumItem: React.FC<Props> = ({trackId, title, image, releasedAt, isPublished}) => {
+const AlbumItem: React.FC<Props> = ({albumId, title, image, releasedAt, isPublished}) => {
     const dispatch = useAppDispatch();
     const {id} = useParams();
     const user = useAppSelector(selectUser);
@@ -43,15 +43,15 @@ const AlbumItem: React.FC<Props> = ({trackId, title, image, releasedAt, isPublis
         cardImage = apiURL + '/' + image;
     }
 
-    const handleDelete = async (trackId: string) => {
-        await dispatch(deleteAlbum(trackId));
+    const handleDelete = async (albumId: string) => {
+        await dispatch(deleteAlbum(albumId));
         await dispatch(fetchAlbums(id));
     };
 
     return (
         <Grid item xs={12} sm={6} md={4} lg={3} style={{maxHeight: 5}}>
             <Card>
-                <CardActionArea component={Link} to={'/tracks/' + id}>
+                <CardActionArea component={Link} to={'/tracks/' + albumId}>
                     <CardHeader title={title}/>
                     <ImageCardMedia image={cardImage} title={title}/>
                 </CardActionArea>
@@ -62,7 +62,7 @@ const AlbumItem: React.FC<Props> = ({trackId, title, image, releasedAt, isPublis
                             <Typography>{isPublished ? 'Album was published' : 'Album was not published yet'} </Typography>
                             <Button
                                 variant="contained"
-                                onClick={() => handleDelete(trackId)}
+                                onClick={() => handleDelete(albumId)}
                                 disabled={deleting}
                             >
                                 {deleting ?

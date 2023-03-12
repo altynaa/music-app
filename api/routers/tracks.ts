@@ -11,22 +11,21 @@ tracksRouter.get('/', role, async (req, res) => {
     try {
         const user = (req as RequestWithUser).user;
         if (req.query.album) {
-            if (user.role === 'admin') {
-                const tracks = await Track.find({album: req.query.album}).sort({ordNumber: 1});
+            if (!user || user.role != 'admin') {
+                const tracks = await Track.find({album: req.query.album, isPublished: true}).sort({ordNumber: 1});
                 return res.send(tracks);
             } else {
-                const tracks = await Track.find({album: req.query.album, isPublished: true}).sort({ordNumber: 1});
+                const tracks = await Track.find({album: req.query.album}).sort({ordNumber: 1});
                 return res.send(tracks);
             }
         } else {
-            if (user.role === 'admin') {
-                const tracks = await Track.find().sort({ordNumber: 1});
-                return res.send(tracks);
-            } else {
+            if (!user || user.role != 'admin') {
                 const tracks = await Track.find({isPublished: true}).sort({ordNumber: 1});
                 return res.send(tracks);
+            } else {
+                const tracks = await Track.find().sort({ordNumber: 1});
+                return res.send(tracks);
             }
-
         }
     } catch {
         return res.sendStatus(500);
