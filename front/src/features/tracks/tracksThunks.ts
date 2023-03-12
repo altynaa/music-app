@@ -33,3 +33,10 @@ export const deleteTrack = createAsyncThunk<void, string>(
         await axiosApi.delete('/tracks/' + id);
     }
 );
+
+export const togglePublished = createAsyncThunk<void, string>(
+    'tracks/toggle',
+    async (id) => {
+        await axiosApi.patch('/tracks/' + id + '/togglePublished');
+    }
+);

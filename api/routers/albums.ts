@@ -5,12 +5,14 @@ import {imagesUpload} from "../multer";
 import auth, {RequestWithUser} from "../middleware/auth";
 import permit from "../middleware/permit";
 import role from "../middleware/role";
+import Track from "../models/Track";
 
 const albumsRouter = express.Router();
 
 albumsRouter.get('/', role, async (req, res) => {
     try {
         const user = (req as RequestWithUser).user;
+
         if (req.query.artist) {
             if (!user || user.role != 'admin') {
                 const albums = await Album.find({artist: req.query.artist, isPublished: true}).sort({releasedAt: -1});
@@ -85,10 +87,16 @@ albumsRouter.delete('/:id', auth, permit('user', 'admin'), async (req, res, next
             return res.send({error: 'Album was not found'});
         }
         if (user.role === 'admin' || user._id.toString() === album.user._id.toString() && album.isPublished === false) {
-            const deleteAlbum = await Album.findByIdAndRemove(req.params.id);
-            if (deleteAlbum) {
-                return res.send({message: 'Album was deleted'});
+            const findAlbum = await Track.find({album: req.params.id});
+            if (findAlbum.length > 0) {
+                return res.send({error: 'Delete denied. This album has connected tracks'});
+            } else {
+                const deleteAlbum = await Album.findByIdAndRemove(req.params.id);
+                if (deleteAlbum) {
+                    return res.send({message: 'Album was deleted'});
+                }
             }
+
         } else {
             return res.status(403).send({error: 'No authorization to delete'});
         }

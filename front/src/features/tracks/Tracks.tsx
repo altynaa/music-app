@@ -1,9 +1,9 @@
 import React, {useEffect} from 'react';
 import {useParams} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {selectTrackDeleting, selectTracks, selectTracksLoading} from "./tracksSlice";
-import {deleteTrack, fetchTracks} from "./tracksThunks";
-import {fetchOneAlbum} from "../albums/albumsThunks";
+import {selectTrackDeleting, selectTracks, selectTracksLoading, selectTrackToggling} from "./tracksSlice";
+import {deleteTrack, fetchTracks, togglePublished} from "./tracksThunks";
+import { fetchOneAlbum} from "../albums/albumsThunks";
 import {selectOneAlbum} from "../albums/albumsSlice";
 import {selectUser} from "../users/usersSlice";
 import {addTrackHistory} from "../trackHistory/trackHistoriesThunks";
@@ -19,6 +19,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import DeleteIcon from '@mui/icons-material/Delete';
+import PublishIcon from '@mui/icons-material/Publish';
+import UnpublishedIcon from '@mui/icons-material/Unpublished';
 
 const Tracks = () => {
     const dispatch = useAppDispatch();
@@ -29,6 +31,7 @@ const Tracks = () => {
     const user = useAppSelector(selectUser);
     const trackAdding = useAppSelector(selectTracksHistAdding);
     const deleting = useAppSelector(selectTrackDeleting);
+    const toggling = useAppSelector(selectTrackToggling);
 
     useEffect(() => {
         if (id) {
@@ -43,6 +46,13 @@ const Tracks = () => {
 
     const handleDelete = async (trackId: string) => {
         await dispatch(deleteTrack(trackId));
+        if (id) {
+            await dispatch(fetchTracks(id));
+        }
+    };
+
+    const handleTogglePublished = async (trackId: string) => {
+        await dispatch(togglePublished(trackId));
         if (id) {
             await dispatch(fetchTracks(id));
         }
@@ -72,6 +82,7 @@ const Tracks = () => {
                                     {user && <TableCell align="center">Play</TableCell>}
                                     {user?.role === 'admin' && <TableCell align="left">Info</TableCell>}
                                     {user?.role === 'admin' && <TableCell align="center">Delete</TableCell>}
+                                    {user?.role === 'admin' && <TableCell align="center">Publish / Remove</TableCell>}
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -110,8 +121,23 @@ const Tracks = () => {
 
                                                     {deleting ?
                                                         <Box sx={{display: 'flex'}}>
-                                                        <CircularProgress/>
-                                                        </Box> :  <DeleteIcon/>
+                                                            <CircularProgress/>
+                                                        </Box> : <DeleteIcon/>
+                                                    }
+                                                </Button>
+                                            </TableCell>
+                                        }
+                                        {user?.role === 'admin' &&
+                                            <TableCell align="center">
+                                                <Button
+                                                    variant="contained"
+                                                    onClick={() => handleTogglePublished(track._id)}
+                                                    disabled={toggling}
+                                                >
+                                                    {toggling ?
+                                                        <Box sx={{display: 'flex'}}>
+                                                            <CircularProgress/>
+                                                        </Box> : track.isPublished ? <UnpublishedIcon/> : <PublishIcon/>
                                                     }
                                                 </Button>
                                             </TableCell>

@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import auth, {RequestWithUser} from "../middleware/auth";
 import permit from "../middleware/permit";
 import role from "../middleware/role";
+import TrackHistory from "../models/TrackHistory";
 
 const tracksRouter = express.Router();
 
@@ -70,9 +71,14 @@ tracksRouter.delete('/:id', auth, permit('admin', 'user'), async (req, res, next
             return res.send({error: 'Track was not found'});
         }
         if (user.role === 'admin' || user._id.toString() === track.user._id.toString() && track.isPublished === false) {
-            const deleteTrack = await Track.findByIdAndRemove(req.params.id);
-            if (deleteTrack) {
-                return res.send({message: 'Track was deleted'});
+            const findTrack = await TrackHistory.find({track: req.params.id});
+            if (findTrack.length > 0) {
+                return res.send({error: 'Delete denied. This track was already listened'});
+            } else {
+                const deleteTrack = await Track.findByIdAndRemove(req.params.id);
+                if (deleteTrack) {
+                    return res.send({message: 'Track was deleted'});
+                }
             }
         } else {
             return res.status(403).send({error: 'No authorization to delete'});

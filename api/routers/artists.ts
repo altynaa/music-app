@@ -5,6 +5,7 @@ import {imagesUpload} from "../multer";
 import auth, {RequestWithUser} from "../middleware/auth";
 import permit from "../middleware/permit";
 import role from "../middleware/role";
+import Album from "../models/Album";
 
 const artistsRouter = express.Router();
 
@@ -69,9 +70,14 @@ artistsRouter.delete('/:id', auth, permit('user', 'admin'), async (req, res, nex
             return res.status(400).send({error: 'Artist was not found'});
         }
         if (user.role === 'admin' || user._id.toString() === artist.user._id.toString() && artist.isPublished === false) {
-            const deleteArtist = await Artist.findByIdAndRemove(req.params.id);
-            if (deleteArtist) {
-                return res.send({message: 'Deleted successfully'});
+            const findArtist = await Album.find({artist: req.params.id});
+            if (findArtist.length > 0) {
+                return res.send({error: 'Delete denied. This artist has connected albums'});
+            } else {
+                const deleteArtist = await Artist.findByIdAndRemove(req.params.id);
+                if (deleteArtist) {
+                    return res.send({message: 'Deleted successfully'});
+                }
             }
         }
         return res.status(403).send({error: 'No authorization to delete'});

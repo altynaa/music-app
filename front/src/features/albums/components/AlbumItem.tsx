@@ -6,7 +6,7 @@ import {
     Box,
     Button,
     Card,
-    CardActionArea,
+    CardActionArea, CardActions,
     CardContent,
     CardHeader,
     CardMedia, CircularProgress,
@@ -16,8 +16,8 @@ import {
 } from "@mui/material";
 import {useAppDispatch, useAppSelector} from "../../../app/hooks";
 import {selectUser} from "../../users/usersSlice";
-import {selectAlbumDeleting} from "../albumsSlice";
-import {deleteAlbum, fetchAlbums} from "../albumsThunks";
+import {selectAlbumDeleting, selectAlbumToggling} from "../albumsSlice";
+import {deleteAlbum, fetchAlbums, togglePublished} from "../albumsThunks";
 
 interface Props {
     albumId: string,
@@ -37,6 +37,7 @@ const AlbumItem: React.FC<Props> = ({albumId, title, image, releasedAt, isPublis
     const {id} = useParams();
     const user = useAppSelector(selectUser);
     const deleting = useAppSelector(selectAlbumDeleting);
+    const toggling = useAppSelector(selectAlbumToggling);
 
     let cardImage = noImageAvailable;
     if (image) {
@@ -45,6 +46,11 @@ const AlbumItem: React.FC<Props> = ({albumId, title, image, releasedAt, isPublis
 
     const handleDelete = async (albumId: string) => {
         await dispatch(deleteAlbum(albumId));
+        await dispatch(fetchAlbums(id));
+    };
+
+    const handleTogglePublished = async (albumId: string) => {
+        await dispatch(togglePublished(albumId));
         await dispatch(fetchAlbums(id));
     };
 
@@ -60,20 +66,33 @@ const AlbumItem: React.FC<Props> = ({albumId, title, image, releasedAt, isPublis
                     {user?.role === 'admin' &&
                         <Box>
                             <Typography>{isPublished ? 'Album was published' : 'Album was not published yet'} </Typography>
-                            <Button
-                                variant="contained"
-                                onClick={() => handleDelete(albumId)}
-                                disabled={deleting}
-                            >
-                                {deleting ?
-                                    <Box sx={{display: 'flex'}}>
-                                        <CircularProgress/>
-                                    </Box> : 'Delete'
-                                }
-                            </Button>
+                            <CardActions>
+                                <Button
+                                    variant="contained"
+                                    onClick={() => handleDelete(albumId)}
+                                    disabled={deleting}
+                                >
+                                    {deleting ?
+                                        <Box sx={{display: 'flex'}}>
+                                            <CircularProgress/>
+                                        </Box> : 'Delete'
+                                    }
+                                </Button>
+
+                                <Button
+                                    variant="contained"
+                                    onClick={() => handleTogglePublished(albumId)}
+                                    disabled={toggling}
+                                >
+                                    {toggling ?
+                                        <Box sx={{display: 'flex'}}>
+                                            <CircularProgress/>
+                                        </Box> : isPublished ? 'Remove' : 'Publish'
+                                    }
+                                </Button>
+                            </CardActions>
                         </Box>}
                 </CardContent>
-
             </Card>
         </Grid>
     );

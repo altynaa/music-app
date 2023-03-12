@@ -1,7 +1,7 @@
 import {Album, ValidationError} from "../../types";
 import {createSlice} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
-import {addAlbum, deleteAlbum, fetchAlbums, fetchOneAlbum} from "./albumsThunks";
+import {addAlbum, deleteAlbum, fetchAlbums, fetchOneAlbum, togglePublished} from "./albumsThunks";
 
 interface AlbumsState {
     albums: Album [];
@@ -10,7 +10,8 @@ interface AlbumsState {
     albumLoading: boolean;
     albumAdding: boolean;
     albumError: ValidationError | null;
-    albumDeleting: boolean
+    albumDeleting: boolean;
+    albumToggling: boolean
 }
 
 const initialState: AlbumsState = {
@@ -33,7 +34,8 @@ const initialState: AlbumsState = {
     albumLoading: false,
     albumAdding: false,
     albumError: null,
-    albumDeleting: false
+    albumDeleting: false,
+    albumToggling: false
 };
 
 export const albumsSlice = createSlice({
@@ -84,6 +86,16 @@ export const albumsSlice = createSlice({
         builder.addCase(deleteAlbum.rejected, (state) => {
             state.albumDeleting = false;
         });
+
+        builder.addCase(togglePublished.pending, (state) => {
+            state.albumToggling = true;
+        });
+        builder.addCase(togglePublished.fulfilled, (state) => {
+            state.albumToggling = false;
+        });
+        builder.addCase(togglePublished.rejected, (state) => {
+            state.albumToggling = false;
+        });
     }
 });
 
@@ -95,3 +107,4 @@ export const selectOneAlbum = (state: RootState) => state.albums.album;
 export const selectAlbumAdding = (state: RootState) => state.albums.albumAdding;
 export const selectAlbumError = (state: RootState) => state.albums.albumError;
 export const selectAlbumDeleting = (state: RootState) => state.albums.albumDeleting;
+export const selectAlbumToggling = (state: RootState) => state.albums.albumToggling;

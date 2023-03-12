@@ -2,11 +2,15 @@ import React from 'react';
 import {Link} from "react-router-dom";
 import noImageAvailable from '../../../assets/images/noImageAvailable.jpg';
 import {apiURL} from "../../../constants";
+import {useAppDispatch, useAppSelector} from "../../../app/hooks";
+import {selectUser} from "../../users/usersSlice";
+import {selectArtistDeleting, selectArtistToggling} from "../artistsSlice";
+import {deleteArtist, fetchArtists, togglePublished} from "../artistsThunks";
 import {
     Box,
     Button,
     Card,
-    CardActionArea,
+    CardActionArea, CardActions,
     CardContent,
     CardHeader,
     CardMedia, CircularProgress,
@@ -14,10 +18,6 @@ import {
     styled,
     Typography
 } from "@mui/material";
-import {useAppDispatch, useAppSelector} from "../../../app/hooks";
-import {selectUser} from "../../users/usersSlice";
-import {selectArtistDeleting} from "../artistsSlice";
-import {deleteArtist, fetchArtists} from "../artistsThunks";
 
 
 const ImageCardMedia = styled(CardMedia)({
@@ -36,6 +36,7 @@ const ArtistItem: React.FC<Props> = ({id, name, image, isPublished}) => {
     const dispatch = useAppDispatch();
     const user = useAppSelector(selectUser);
     const deleting = useAppSelector(selectArtistDeleting);
+    const toggling = useAppSelector(selectArtistToggling);
 
     let cardImage = noImageAvailable;
     if (image) {
@@ -47,6 +48,11 @@ const ArtistItem: React.FC<Props> = ({id, name, image, isPublished}) => {
         await dispatch(fetchArtists());
     };
 
+    const handleTogglePublish = async (id: string) => {
+        await dispatch(togglePublished(id));
+        await dispatch(fetchArtists());
+    };
+
     return (
         <Grid item xs={12} sm={6} md={4} lg={3}>
             <Card>
@@ -55,20 +61,33 @@ const ArtistItem: React.FC<Props> = ({id, name, image, isPublished}) => {
                     <ImageCardMedia image={cardImage} title={name}/>
                 </CardActionArea>
 
-                {user?.role === 'admin' &&
+                {user?.role === 'admin'  &&
                     <CardContent>
                         <Typography>{isPublished ? 'Artist was published' : 'Artist was not published yet'} </Typography>
-                        <Button
-                            variant="contained"
-                            onClick={() => handleDelete(id)}
-                            disabled={deleting}
-                        >
-                            {deleting ?
-                                <Box sx={{display: 'flex'}}>
-                                    <CircularProgress/>
-                                </Box> : 'Delete'
-                            }
-                        </Button>
+                        <CardActions>
+                            <Button
+                                variant="contained"
+                                onClick={() => handleDelete(id)}
+                                disabled={deleting}
+                            >
+                                {deleting ?
+                                    <Box sx={{display: 'flex'}}>
+                                        <CircularProgress/>
+                                    </Box> : 'Delete'
+                                }
+                            </Button>
+                            <Button
+                                variant="contained"
+                                onClick={() => handleTogglePublish(id)}
+                                disabled={toggling}
+                            >
+                                {toggling ?
+                                    <Box sx={{display: 'flex'}}>
+                                        <CircularProgress/>
+                                    </Box> : isPublished ? 'Remove' : 'Publish'
+                                }
+                            </Button>
+                        </CardActions>
                     </CardContent>
                 }
             </Card>

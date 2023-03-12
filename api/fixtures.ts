@@ -82,10 +82,10 @@ const run = async () => {
         isPublished: true,
         user: johnUser._id
     }, {
-        title: "7",
+        title: "Map of the Soul: 7",
         artist: btsArtist._id,
         releasedAt: 2016,
-        image: "fixtures/anti.png",
+        image: "fixtures/7.jpg",
         isPublished: false,
         user: johnUser._id
     });
