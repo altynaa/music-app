@@ -3,7 +3,7 @@ import {Link as RouterLink, useNavigate} from 'react-router-dom';
 import {LoginMutation} from "../../types";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {selectLoginError, selectLoginLoading} from "./usersSlice";
-import {login} from "./usersThunks";
+import {googleLogin, login} from "./usersThunks";
 import {
     Alert,
     Avatar,
@@ -42,6 +42,11 @@ const Login = () => {
         navigate('/')
     };
 
+    const googleLoginHandler = async (credentials: string) => {
+        await dispatch(googleLogin(credentials)).unwrap();
+        navigate('/');
+    };
+
     return (
         <Container component="main" maxWidth="xs">
             <Box
@@ -60,7 +65,9 @@ const Login = () => {
                 </Typography>
                 <Box sx={{pt: 2}}>
                     <GoogleLogin onSuccess={(credentialResponse) => {
-                        console.log(credentialResponse);
+                        if (credentialResponse.credential) {
+                            googleLoginHandler(credentialResponse.credential);
+                        }
                     }}
                     onError={() => {
                         console.log('Login failed');

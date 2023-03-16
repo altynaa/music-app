@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { User } from '../../../types';
-import { Button, Menu, MenuItem } from '@mui/material';
+import {Avatar, Button, Menu, MenuItem} from '@mui/material';
 import {Link} from "react-router-dom";
 import {useAppDispatch} from "../../../app/hooks";
 import {logout} from "../../../features/users/usersThunks";
@@ -32,7 +32,8 @@ const UserMenu: React.FC<Props> = ({user}) => {
                 onClick={handleClick}
                 color="inherit"
             >
-                Hello, {user.username}
+                Hello, {user.displayName}
+                <Avatar sx={{ml: 2}} alt={user.displayName} src={user.image} />
             </Button>
             <Menu
                 anchorEl={anchorEl}

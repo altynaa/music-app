@@ -34,6 +34,8 @@ export interface User {
     username: string;
     token: string;
     role: string;
+    displayName: string
+    image: string
 }
 
 export interface UserResponse {
