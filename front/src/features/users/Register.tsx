@@ -6,6 +6,7 @@ import {register} from "./usersThunks";
 import {selectRegisterError, selectRegisterLoading} from "./usersSlice";
 import {Avatar, Box, Button, CircularProgress, Container, Grid, Link, TextField, Typography} from "@mui/material";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import FileInput from "../../components/UI/FileInput/FileInput";
 
 
 const Register = () => {
@@ -16,13 +17,20 @@ const Register = () => {
 
     const [regState, setRegState] = useState<RegistrationMutation>({
         username: '',
-        password: ''
+        password: '',
+        displayName: '',
+        image: null
     });
 
     const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
         setRegState(prev => ({...prev, [name]: value}));
     };
+
+    const inputFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const {name, files} = e.target;
+        setRegState(prev => ({...prev, [name]: files && files[0] ? files[0] : null}));
+    }
 
     const submitFormHandler = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -66,6 +74,7 @@ const Register = () => {
                                 label="Username"
                                 name="username"
                                 autoComplete="new-username"
+                                required
                                 value={regState.username}
                                 onChange={inputChangeHandler}
                                 error={Boolean(getFieldError('username'))}
@@ -78,11 +87,27 @@ const Register = () => {
                                 name="password"
                                 autoComplete="new-password"
                                 type="password"
+                                required
                                 value={regState.password}
                                 onChange={inputChangeHandler}
                                 error={Boolean(getFieldError('password'))}
                                 helperText={getFieldError('password')}
                             />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                label="Display Name"
+                                name="displayName"
+                                autoComplete="display-name"
+                                required
+                                value={regState.displayName}
+                                onChange={inputChangeHandler}
+                                error={Boolean(getFieldError('displayName'))}
+                                helperText={getFieldError('displayName')}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FileInput onChange={inputFileHandler} label="image" name="image"/>
                         </Grid>
                     </Grid>
                     <Button

@@ -4,6 +4,8 @@ import {Avatar, Button, Menu, MenuItem} from '@mui/material';
 import {Link} from "react-router-dom";
 import {useAppDispatch} from "../../../app/hooks";
 import {logout} from "../../../features/users/usersThunks";
+import noImageAvailable from "../../../assets/images/noImageAvailable.jpg";
+import {apiURL} from "../../../constants";
 
 
 interface Props {
@@ -13,6 +15,12 @@ interface Props {
 const UserMenu: React.FC<Props> = ({user}) => {
     const dispatch = useAppDispatch();
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+    let image = noImageAvailable;
+
+    if (user.image != null) {
+        image = apiURL + '/' + user.image;
+    }
+
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -33,7 +41,7 @@ const UserMenu: React.FC<Props> = ({user}) => {
                 color="inherit"
             >
                 Hello, {user.displayName}
-                <Avatar sx={{ml: 2}} alt={user.displayName} src={user.image} />
+                <Avatar sx={{ml: 2}} alt={user.displayName} src={image} />
             </Button>
             <Menu
                 anchorEl={anchorEl}

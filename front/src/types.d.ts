@@ -27,6 +27,8 @@ export interface Track {
 export interface RegistrationMutation {
     username: string;
     password: string;
+    displayName: string;
+    image: File | null;
 }
 
 export interface User {
