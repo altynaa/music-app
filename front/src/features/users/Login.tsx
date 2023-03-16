@@ -17,6 +17,7 @@ import {
     Typography
 } from '@mui/material';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import {GoogleLogin} from "@react-oauth/google";
 
 
 const Login = () => {
@@ -57,6 +58,15 @@ const Login = () => {
                 <Typography component="h1" variant="h5">
                     Sign in
                 </Typography>
+                <Box sx={{pt: 2}}>
+                    <GoogleLogin onSuccess={(credentialResponse) => {
+                        console.log(credentialResponse);
+                    }}
+                    onError={() => {
+                        console.log('Login failed');
+                    }}
+                    />
+                </Box>
                 {error && (
                     <Alert severity="error" sx={{mt: 3, width: '100%'}}>
                         {error.error}

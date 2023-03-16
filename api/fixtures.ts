@@ -24,12 +24,14 @@ const run = async () => {
         username: "Jane Smith",
         password: "Janepassword",
         token: randomUUID(),
-        role: 'admin'
+        role: 'admin',
+        displayName: "Jane S"
     }, {
         username: "John Smith",
         password: "Johnpassword",
         token: randomUUID(),
-        role: 'user'
+        role: 'user',
+        displayName: "John S"
     });
 
     const [beyonceArtist, rihannaArtist, btsArtist] = await Artist.create({
