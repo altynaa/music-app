@@ -19,7 +19,6 @@ export const register = createAsyncThunk<User, RegistrationMutation, {rejectValu
                 }
             });
 
-
             const response = await axiosApi.post<UserResponse>('/users', formData);
             return response.data.user;
         } catch (e) {

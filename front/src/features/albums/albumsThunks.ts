@@ -1,6 +1,6 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import axiosApi from "../../axiosApi";
-import {Album, ApiAlbum, ValidationError} from "../../types";
+import {Album, ApiAlbum, GlobalError, ValidationError} from "../../types";
 import {isAxiosError} from "axios";
 
 export const fetchAlbums = createAsyncThunk<Album [], string | undefined>(
@@ -54,7 +54,14 @@ export const addAlbum = createAsyncThunk<void, ApiAlbum, {rejectValue: Validatio
 export const deleteAlbum = createAsyncThunk<void, string>(
     'albums/delete',
     async (id) => {
-        await axiosApi.delete('/albums/' + id);
+        try {
+            await axiosApi.delete('/albums/' + id);
+        } catch (e) {
+            if (isAxiosError(e) && e.response && e.response.status === 403) {
+                return alert(e.response.data.error as GlobalError);
+            }
+            throw (e);
+        }
     }
 );
 

@@ -100,6 +100,7 @@ const TrackForm = () => {
                         value={track.length}
                         onChange={inputChangeHandler}
                         required
+                        type="time"
                         error={Boolean(getFieldError('length'))}
                         helperText={getFieldError('length')}
                     />

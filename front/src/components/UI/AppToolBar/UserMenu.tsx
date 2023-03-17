@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { User } from '../../../types';
 import {Avatar, Button, Menu, MenuItem} from '@mui/material';
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useAppDispatch} from "../../../app/hooks";
 import {logout} from "../../../features/users/usersThunks";
 import noImageAvailable from "../../../assets/images/noImageAvailable.jpg";
 import {apiURL} from "../../../constants";
+import {fetchArtists} from "../../../features/artists/artistsThunks";
 
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
 
 const UserMenu: React.FC<Props> = ({user}) => {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     let image = noImageAvailable;
 
@@ -29,8 +31,10 @@ const UserMenu: React.FC<Props> = ({user}) => {
         setAnchorEl(null);
     };
 
-    const handleLogout = () => {
-        dispatch(logout());
+    const handleLogout = async () => {
+        await dispatch(logout());
+        await navigate('/');
+        await dispatch(fetchArtists());
     };
 
 

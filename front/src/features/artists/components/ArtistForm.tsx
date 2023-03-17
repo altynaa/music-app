@@ -64,7 +64,6 @@ const ArtistForm = () => {
                         name="information"
                         value={artist.information}
                         onChange={inputChangeHandler}
-                        required
                     />
                 </Grid>
 

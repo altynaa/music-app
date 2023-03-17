@@ -20,7 +20,7 @@ const Albums = () => {
             dispatch(fetchAlbums(id));
             dispatch(fetchOneArtist(id));
         }
-    }, [dispatch]);
+    }, [dispatch, id]);
 
     return (
         <Grid container direction="column" spacing={2}>

@@ -1,5 +1,5 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {ApiTrack, Track, ValidationError} from "../../types";
+import {ApiTrack, GlobalError, Track, ValidationError} from "../../types";
 import axiosApi from "../../axiosApi";
 import {isAxiosError} from "axios";
 
@@ -29,8 +29,14 @@ export const addTrack = createAsyncThunk<void, ApiTrack, {rejectValue: Validatio
 export const deleteTrack = createAsyncThunk<void, string>(
     'tracks/delete',
     async (id) => {
-        console.log(id)
-        await axiosApi.delete('/tracks/' + id);
+        try {
+            await axiosApi.delete('/tracks/' + id);
+        } catch (e) {
+            if (isAxiosError(e) && e.response && e.response.status === 403) {
+                return alert(e.response.data.error as GlobalError);
+            }
+            throw (e);
+        }
     }
 );
 

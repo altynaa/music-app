@@ -37,9 +37,6 @@ artistsRouter.get('/:id', async (req, res) => {
 artistsRouter.post('/', auth, imagesUpload.single('image'), async (req, res, next) => {
     try {
         const user = (req as RequestWithUser).user;
-        if (!user) {
-            return {error: 'Please log in to submit artist'}
-        }
 
         const artist = await Artist.create({
             name: req.body.name,
@@ -63,16 +60,15 @@ artistsRouter.delete('/:id', auth, permit('user', 'admin'), async (req, res, nex
     try {
         const user = (req as RequestWithUser).user;
         const artist = await Artist.findById(req.params.id);
-        if (!user) {
-            return res.send({error: "Please log in to delete"});
-        }
+
+
         if (!artist) {
             return res.status(400).send({error: 'Artist was not found'});
         }
         if (user.role === 'admin' || user._id.toString() === artist.user._id.toString() && artist.isPublished === false) {
             const findArtist = await Album.find({artist: req.params.id});
             if (findArtist.length > 0) {
-                return res.send({error: 'Delete denied. This artist has connected albums'});
+                return res.status(403).send({error: 'Delete was rejected. This artist has connected albums'})
             } else {
                 const deleteArtist = await Artist.findByIdAndRemove(req.params.id);
                 if (deleteArtist) {

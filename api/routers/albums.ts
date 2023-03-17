@@ -51,9 +51,6 @@ albumsRouter.get('/:id', async (req, res) => {
 albumsRouter.post('/', auth, imagesUpload.single('image'), async (req, res, next) => {
     try {
         const user = (req as RequestWithUser).user;
-        if (!user) {
-            return {error: 'Please log in to submit album'}
-        }
 
         const album = await Album.create({
             title: req.body.title,
@@ -80,16 +77,13 @@ albumsRouter.delete('/:id', auth, permit('user', 'admin'), async (req, res, next
         const user = (req as RequestWithUser).user;
         const album = await Album.findById(req.params.id).populate('user');
 
-        if (!user) {
-            return res.send({error: 'Please log in to delete user'});
-        }
         if (!album) {
             return res.send({error: 'Album was not found'});
         }
         if (user.role === 'admin' || user._id.toString() === album.user._id.toString() && album.isPublished === false) {
             const findAlbum = await Track.find({album: req.params.id});
             if (findAlbum.length > 0) {
-                return res.send({error: 'Delete denied. This album has connected tracks'});
+                return res.status(403).send({error: 'Delete was rejected. This album has connected tracks'})
             } else {
                 const deleteAlbum = await Album.findByIdAndRemove(req.params.id);
                 if (deleteAlbum) {
@@ -111,30 +105,30 @@ albumsRouter.delete('/:id', auth, permit('user', 'admin'), async (req, res, next
 
 albumsRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
     try {
-    const album = await Album.findById(req.params.id);
+        const album = await Album.findById(req.params.id);
 
-
-    if (!album) {
-        return res.send({error: 'Album was not found'});
-    }
-    let newAlbum;
-
-    if (album.isPublished === true) {
-       newAlbum = {
-           isPublished: false
-       }
-    } else {
-        newAlbum = {
-            isPublished: true
+        if (!album) {
+            return res.send({error: 'Album was not found'});
         }
-    }
-    const updatedAlbum = await Album.findByIdAndUpdate(req.params.id, newAlbum);
-    return res.send(updatedAlbum);
+        let newAlbum;
+
+        if (album.isPublished === true) {
+            newAlbum = {
+                isPublished: false
+            }
+        } else {
+            newAlbum = {
+                isPublished: true
+            }
+        }
+        const updatedAlbum = await Album.findByIdAndUpdate(req.params.id, newAlbum);
+        return res.send(updatedAlbum);
 
     } catch (e) {
         if (e instanceof mongoose.Error.ValidationError) {
             return res.status(400).send(e);
-        } return next(e);
+        }
+        return next(e);
     }
 })
 

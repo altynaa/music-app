@@ -38,13 +38,14 @@ const ArtistItem: React.FC<Props> = ({id, name, image, isPublished}) => {
     const deleting = useAppSelector(selectArtistDeleting);
     const toggling = useAppSelector(selectArtistToggling);
 
+
     let cardImage = noImageAvailable;
     if (image) {
         cardImage = apiURL + '/' + image;
     }
 
     const handleDelete = async (id: string) => {
-        await dispatch(deleteArtist(id));
+        await dispatch(deleteArtist(id)).unwrap();
         await dispatch(fetchArtists());
     };
 
@@ -84,7 +85,7 @@ const ArtistItem: React.FC<Props> = ({id, name, image, isPublished}) => {
                                 {toggling ?
                                     <Box sx={{display: 'flex'}}>
                                         <CircularProgress/>
-                                    </Box> : isPublished ? 'Remove' : 'Publish'
+                                    </Box> : isPublished ? 'Unpublish' : 'Publish'
                                 }
                             </Button>
                         </CardActions>

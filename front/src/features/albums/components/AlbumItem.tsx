@@ -45,7 +45,7 @@ const AlbumItem: React.FC<Props> = ({albumId, title, image, releasedAt, isPublis
     }
 
     const handleDelete = async (albumId: string) => {
-        await dispatch(deleteAlbum(albumId));
+        await dispatch(deleteAlbum(albumId)).unwrap();
         await dispatch(fetchAlbums(id));
     };
 
@@ -87,7 +87,7 @@ const AlbumItem: React.FC<Props> = ({albumId, title, image, releasedAt, isPublis
                                     {toggling ?
                                         <Box sx={{display: 'flex'}}>
                                             <CircularProgress/>
-                                        </Box> : isPublished ? 'Remove' : 'Publish'
+                                        </Box> : isPublished ? 'Unpublish' : 'Publish'
                                     }
                                 </Button>
                             </CardActions>

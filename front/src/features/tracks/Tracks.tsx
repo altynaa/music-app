@@ -38,7 +38,7 @@ const Tracks = () => {
             dispatch(fetchTracks(id));
             dispatch(fetchOneAlbum(id))
         }
-    }, [dispatch]);
+    }, [dispatch, id]);
 
     const addTrackToHistory = async (track: HistoryMutation) => {
         await dispatch(addTrackHistory(track));

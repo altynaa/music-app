@@ -36,9 +36,6 @@ tracksRouter.get('/', role, async (req, res) => {
 tracksRouter.post('/', auth, async (req, res, next) => {
     try {
         const user = (req as RequestWithUser).user;
-        if (!user) {
-            return {error: 'Please log in to submit track'};
-        }
 
         const track = await Track.create({
             title: req.body.title,
@@ -64,16 +61,14 @@ tracksRouter.delete('/:id', auth, permit('admin', 'user'), async (req, res, next
         const user = (req as RequestWithUser).user;
         const track = await Track.findById(req.params.id);
 
-        if (!user) {
-            return res.send({error: 'Please log in to delete'});
-        }
         if (!track) {
             return res.send({error: 'Track was not found'});
         }
         if (user.role === 'admin' || user._id.toString() === track.user._id.toString() && track.isPublished === false) {
             const findTrack = await TrackHistory.find({track: req.params.id});
             if (findTrack.length > 0) {
-                return res.send({error: 'Delete denied. This track was already listened'});
+                return res.status(403).send({error: 'Delete was rejected. This track was already listened by user'});
+
             } else {
                 const deleteTrack = await Track.findByIdAndRemove(req.params.id);
                 if (deleteTrack) {

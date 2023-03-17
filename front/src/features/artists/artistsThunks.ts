@@ -1,6 +1,7 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import axiosApi from "../../axiosApi";
-import {ApiArtist, Artist} from "../../types";
+import {ApiArtist, Artist, GlobalError} from "../../types";
+import {isAxiosError} from "axios";
 
 export const fetchArtists = createAsyncThunk<Artist []>(
     'artists/fetchAll',
@@ -38,7 +39,14 @@ export const addArtist = createAsyncThunk<void, ApiArtist>(
 export const deleteArtist = createAsyncThunk<void, string>(
     'artists/delete',
     async (id) => {
-        await axiosApi.delete('/artists/' + id);
+        try {
+           await axiosApi.delete('/artists/' + id);
+        } catch (e) {
+            if (isAxiosError(e) && e.response && e.response.status === 403) {
+                return alert(e.response.data.error as GlobalError);
+            }
+            throw (e);
+        }
     }
 );
 
