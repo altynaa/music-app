@@ -59,7 +59,7 @@ export const googleLogin = createAsyncThunk<User, string, {rejectValue: GlobalEr
             throw (e);
         }
     }
-)
+);
 
 export const logout = createAsyncThunk(
     'users/logout',
