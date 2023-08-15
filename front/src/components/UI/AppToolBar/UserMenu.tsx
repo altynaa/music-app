@@ -44,7 +44,7 @@ const UserMenu: React.FC<Props> = ({user}) => {
                 onClick={handleClick}
                 color="inherit"
             >
-                Hello, {user.displayName}
+                {user.displayName}
                 <Avatar sx={{ml: 2}} alt={user.displayName} src={image} />
             </Button>
             <Menu

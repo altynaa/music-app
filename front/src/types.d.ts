@@ -66,6 +66,11 @@ export interface GlobalError {
     error: string
 }
 
+export interface DeleteError {
+    error: string;
+    id: string;
+}
+
 export interface TrackHistory {
     _id: string;
     user: string;

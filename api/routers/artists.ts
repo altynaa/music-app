@@ -68,7 +68,7 @@ artistsRouter.delete('/:id', auth, permit('user', 'admin'), async (req, res, nex
         if (user.role === 'admin' || user._id.toString() === artist.user._id.toString() && artist.isPublished === false) {
             const findArtist = await Album.find({artist: req.params.id});
             if (findArtist.length > 0) {
-                return res.status(403).send({error: 'Delete was rejected. This artist has connected albums'})
+                return res.status(403).send({error: 'Delete was rejected. This artist has connected albums', id: req.params.id})
             } else {
                 const deleteArtist = await Artist.findByIdAndRemove(req.params.id);
                 if (deleteArtist) {

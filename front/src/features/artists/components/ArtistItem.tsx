@@ -4,9 +4,10 @@ import noImageAvailable from '../../../assets/images/noImageAvailable.jpg';
 import {apiURL} from "../../../constants";
 import {useAppDispatch, useAppSelector} from "../../../app/hooks";
 import {selectUser} from "../../users/usersSlice";
-import {selectArtistDeleting, selectArtistToggling} from "../artistsSlice";
+import {selectArtistDeleteError, selectArtistDeleting, selectArtistToggling} from "../artistsSlice";
 import {deleteArtist, fetchArtists, togglePublished} from "../artistsThunks";
 import {
+    Alert,
     Box,
     Button,
     Card,
@@ -37,6 +38,7 @@ const ArtistItem: React.FC<Props> = ({id, name, image, isPublished}) => {
     const user = useAppSelector(selectUser);
     const deleting = useAppSelector(selectArtistDeleting);
     const toggling = useAppSelector(selectArtistToggling);
+    const error = useAppSelector(selectArtistDeleteError);
 
 
     let cardImage = noImageAvailable;
@@ -55,7 +57,14 @@ const ArtistItem: React.FC<Props> = ({id, name, image, isPublished}) => {
     };
 
     return (
+
         <Grid item xs={12} sm={6} md={4} lg={3}>
+            <div style={{ position: 'relative' }}>
+                {error && error.id === id &&
+                    (<Alert severity="error" sx={{ width: '100%', position: 'absolute', zIndex: 1  }}>
+                            {error.error}
+                        </Alert>
+                    )}
             <Card>
                 <CardActionArea component={Link} to={'/albums/' + id}>
                     <CardHeader title={name}/>
@@ -64,7 +73,7 @@ const ArtistItem: React.FC<Props> = ({id, name, image, isPublished}) => {
 
                 {user?.role === 'admin'  &&
                     <CardContent>
-                        <Typography>{isPublished ? 'Artist was published' : 'Artist was not published yet'} </Typography>
+                        <Typography>{isPublished ? 'Artist was published' : 'Artist is not published yet'} </Typography>
                         <CardActions>
                             <Button
                                 variant="contained"
@@ -92,6 +101,7 @@ const ArtistItem: React.FC<Props> = ({id, name, image, isPublished}) => {
                     </CardContent>
                 }
             </Card>
+            </div>
         </Grid>
     );
 };

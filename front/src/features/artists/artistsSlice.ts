@@ -1,5 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {Artist} from "../../types";
+import {Artist, DeleteError} from "../../types";
 import {RootState} from "../../app/store";
 import {addArtist, deleteArtist, fetchArtists, fetchOneArtist, togglePublished} from "./artistsThunks";
 
@@ -10,7 +10,8 @@ interface ArtistsState {
     oneArtist: Artist;
     artistAdding: boolean;
     artistDeleting: boolean;
-    artistToggling: boolean
+    artistToggling: boolean;
+    artistDeleteError: DeleteError | null;
 }
 const initialState: ArtistsState = {
     artists: [],
@@ -25,7 +26,8 @@ const initialState: ArtistsState = {
     },
     artistAdding: false,
     artistDeleting: false,
-    artistToggling: false
+    artistToggling: false,
+    artistDeleteError: null,
 };
 
 export const artistsSlice = createSlice({
@@ -70,9 +72,11 @@ export const artistsSlice = createSlice({
         });
         builder.addCase(deleteArtist.fulfilled, (state) => {
             state.artistDeleting = false;
+            state.artistDeleteError = null;
         });
-        builder.addCase(deleteArtist.rejected, (state) => {
+        builder.addCase(deleteArtist.rejected, (state, { payload: error}) => {
             state.artistDeleting = false;
+            state.artistDeleteError = error || null;
         });
 
         builder.addCase(togglePublished.pending, (state) => {
@@ -96,4 +100,5 @@ export const selectOneArtist = (state: RootState) => state.artists.oneArtist;
 export const selectArtistAdding = (state: RootState) => state.artists.artistAdding;
 export const selectArtistDeleting = (state: RootState) => state.artists.artistDeleting;
 export const selectArtistToggling = (state: RootState) => state.artists.artistToggling;
+export const selectArtistDeleteError = (state: RootState) => state.artists.artistDeleteError;
 

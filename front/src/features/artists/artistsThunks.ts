@@ -1,6 +1,6 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import axiosApi from "../../axiosApi";
-import {ApiArtist, Artist, GlobalError} from "../../types";
+import {ApiArtist, Artist, DeleteError} from "../../types";
 import {isAxiosError} from "axios";
 
 export const fetchArtists = createAsyncThunk<Artist []>(
@@ -36,14 +36,14 @@ export const addArtist = createAsyncThunk<void, ApiArtist>(
     }
 );
 
-export const deleteArtist = createAsyncThunk<void, string>(
+export const deleteArtist = createAsyncThunk<void, string, { rejectValue: DeleteError }>(
     'artists/delete',
-    async (id) => {
+    async (id, { rejectWithValue }) => {
         try {
            await axiosApi.delete('/artists/' + id);
         } catch (e) {
             if (isAxiosError(e) && e.response && e.response.status === 403) {
-                return alert(e.response.data.error as GlobalError);
+                return rejectWithValue(e.response.data as DeleteError);
             }
             throw (e);
         }
